@@ -1,0 +1,1029 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CampusConnect - Resource Hub</title>
+    <link
+      rel="shortcut icon"
+      href="/assets/faviconImage.png"
+      type="image/x-icon" />
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+</head>
+<style>
+body {
+  font-family: "Poppins", sans-serif;
+  background-color: #f0f4f8;
+}
+
+.navbar-item {
+  transition: all 0.2s ease;
+}
+
+.navbar-item:hover {
+  color: #6366f1;
+}
+
+.navbar-item.active {
+  color: #6366f1;
+  border-bottom: 2px solid #6366f1;
+}
+
+.add-button {
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.add-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+}
+
+.resource-card {
+  transition: all 0.2s ease;
+}
+
+.resource-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.modal {
+  transition: all 0.3s ease;
+}
+
+.resource-type-btn {
+  transition: all 0.2s ease;
+}
+
+.resource-type-btn:hover {
+  transform: translateY(-2px);
+}
+
+.resource-type-btn.selected {
+  background-color: #6366f1;
+  color: white;
+  border-color: #6366f1;
+}
+
+.category-pill {
+  transition: all 0.2s ease;
+}
+
+.category-pill:hover,
+.category-pill.active {
+  background-color: #6366f1;
+  color: white;
+}
+
+.tab-button {
+  transition: all 0.2s ease;
+}
+
+.tab-button.active {
+  background-color: #6366f1;
+  color: white;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #c7d2fe;
+  border-radius: 10px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #a5b4fc;
+}
+
+.gradient-bg {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.message-bubble {
+  max-width: 80%;
+  border-radius: 18px;
+}
+
+.message-bubble.sent {
+  border-bottom-right-radius: 4px;
+  background-color: #6366f1;
+  color: white;
+}
+
+.message-bubble.received {
+  border-bottom-left-radius: 4px;
+  background-color: #e5e7eb;
+}
+#campusConnect__logo {
+  height: 3rem;
+  width: 3rem;
+  margin-right: 0.8rem;
+}
+
+</style>
+<body>
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center h-16">
+                <!-- Left side - Logo and Search -->
+                <div class="flex items-center mr-6">
+                    <div class="flex-shrink-0">
+                        <div class="flex items-center">
+                            <img src="./assets/faviconImage.png" id="campusConnect__logo">
+                                
+                            <span class="ml-2 text-xl font-bold text-gray-800">CampusConnect</span>
+                        </div>
+                    </div>
+                    <div class="ml-6 relative">
+                        <div class="flex items-center border border-gray-300 rounded-full bg-gray-100 px-3 py-2">
+                            <i class="fas fa-search text-gray-500"></i>
+                            <input type="text" placeholder="Search for resources..." class="ml-2 bg-transparent border-none focus:outline-none text-sm w-64">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Center - Navigation -->
+                <div class="hidden md:flex items-center justify-center flex-1">
+                    <div class="flex space-x-4 items-center whitespace-nowrap ml-6">
+                        <!-- Add Resource Button (Left of Home) -->
+                        <button id="add-resource-btn" class="navbar-item flex flex-col items-center px-3 py-2 text-indigo-600 relative" onclick="window.location.href=`./upload.html`;">
+                            <div class="bg-indigo-600 rounded-full w-8 h-8 flex items-center justify-center">
+                                <i class="fas fa-plus text-white"></i>
+                            </div>
+                            <span class="text-xs mt-1">Add Resource</span>
+                        </button>
+                        
+                        <a href="#" class="navbar-item active flex flex-col items-center px-3 py-2 text-gray-700">
+                            <i class="fas fa-home text-xl"></i>
+                            <span class="text-xs mt-1">Home</span>
+                        </a>
+                        <a href="./calendar.html" class="navbar-item flex flex-col items-center px-3 py-2 text-gray-500">
+                            <i class="fas fa-calendar text-xl"></i>
+                            <span class="text-xs mt-1">Calendar</span>
+                        </a>
+                        <a href="#" class="navbar-item flex flex-col items-center px-3 py-2 text-gray-500">
+                            <i class="fas fa-bookmark text-xl"></i>
+                            <span class="text-xs mt-1">My Library</span>
+                        </a>
+                        <a href="#" id="community-btn" class="navbar-item flex flex-col items-center px-3 py-2 text-gray-500">
+                            <i class="fas fa-users text-xl"></i>
+                            <span class="text-xs mt-1">Community</span>
+                        </a>
+                        <a href="#" id="messages-btn" class="navbar-item flex flex-col items-center px-3 py-2 text-gray-500">
+                            <i class="fas fa-comment-alt text-xl"></i>
+                            <span class="text-xs mt-1">Messages</span>
+                            <span class="absolute top-0 right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">3</span>
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Right side - Profile -->
+                <div class="flex items-center">
+                    <div class="ml-3 relative">
+                        <div class="flex items-center">
+                            <button class="flex text-sm rounded-full focus:outline-none">
+                                <img class="h-8 w-8 rounded-full object-cover" src="https://randomuser.me/api/portraits/men/44.jpg" alt="Profile">
+                                <div class="hidden md:flex flex-col ml-2 text-left whitespace-nowrap">
+                                    <span class="text-sm font-medium text-gray-700">Arjun Sharma</span>
+                                    <span class="text-xs text-gray-500">Computer Science, 3rd Year</span>
+                                </div>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 py-6">
+        <div class="flex flex-col md:flex-row gap-6">
+            <!-- Left Sidebar -->
+            <div class="w-full md:w-1/4">
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="relative">
+                        <div class="h-24 gradient-bg rounded-t-lg"></div>
+                        <div class="absolute top-12 left-1/2 transform -translate-x-1/2">
+                            <img class="h-24 w-24 rounded-full border-4 border-white object-cover" src="https://randomuser.me/api/portraits/men/44.jpg" alt="Profile">
+                        </div>
+                    </div>
+                    <div class="pt-16 pb-4 px-4 text-center">
+                        <h2 class="text-xl font-bold text-gray-800">Arjun Sharma</h2>
+                        <p class="text-gray-600 text-sm">Computer Science, 3rd Year</p>
+                        <p class="text-gray-500 text-sm mt-1">University Institute of Technology, RGPV</p>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-4">
+                        <div class="flex justify-between text-sm">
+                            <span class="text-gray-500">Resources uploaded</span>
+                            <span class="font-medium text-indigo-600">24</span>
+                        </div>
+                        <div class="flex justify-between text-sm mt-2">
+                            <span class="text-gray-500">Resources saved</span>
+                            <span class="font-medium text-indigo-600">87</span>
+                        </div>
+                        <div class="flex justify-between text-sm mt-2">
+                            <span class="text-gray-500">Connections</span>
+                            <span class="font-medium text-indigo-600">156</span>
+                        </div>
+                    </div>
+                    <div class="border-t border-gray-200 px-4 py-4">
+                        <h3 class="font-medium text-gray-800 mb-2">My Resources</h3>
+                        <ul class="text-sm">
+                            <li class="flex items-center py-1">
+                                <i class="fas fa-bookmark text-gray-400 mr-2"></i>
+                                <span class="text-gray-600">Saved resources</span>
+                            </li>
+                            <li class="flex items-center py-1">
+                                <i class="fas fa-upload text-gray-400 mr-2"></i>
+                                <span class="text-gray-600">My uploads</span>
+                            </li>
+                            <li class="flex items-center py-1">
+                                <i class="fas fa-history text-gray-400 mr-2"></i>
+                                <span class="text-gray-600">Recently viewed</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow">
+                    <div class="px-4 py-4">
+                        <h3 class="font-medium text-gray-800 mb-3">My Courses</h3>
+                        <ul class="text-sm">
+                            <li class="flex items-center py-2">
+                                <div class="w-8 h-8 rounded-md bg-blue-100 flex items-center justify-center text-blue-600 mr-3">
+                                    <i class="fas fa-laptop-code"></i>
+                                </div>
+                                <span class="text-gray-700">CS301: Data Structures</span>
+                            </li>
+                            <li class="flex items-center py-2">
+                                <div class="w-8 h-8 rounded-md bg-green-100 flex items-center justify-center text-green-600 mr-3">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <span class="text-gray-700">CS305: Database Systems</span>
+                            </li>
+                            <li class="flex items-center py-2">
+                                <div class="w-8 h-8 rounded-md bg-purple-100 flex items-center justify-center text-purple-600 mr-3">
+                                    <i class="fas fa-network-wired"></i>
+                                </div>
+                                <span class="text-gray-700">CS310: Computer Networks</span>
+                            </li>
+                            <li class="flex items-center py-2">
+                                <div class="w-8 h-8 rounded-md bg-yellow-100 flex items-center justify-center text-yellow-600 mr-3">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <span class="text-gray-700">CS401: Artificial Intelligence</span>
+                            </li>
+                        </ul>
+                        <a href="#" class="text-indigo-600 text-sm font-medium mt-2 inline-block">Manage courses</a>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Center Feed -->
+            <div class="w-full md:w-1/2">
+                <!-- Resource Search and Filter -->
+                <div class="bg-white rounded-lg shadow mb-6 p-4">
+                    <h2 class="text-xl font-bold text-gray-800 mb-4">Find Resources</h2>
+                    
+                    <!-- Resource Type Selection -->
+                    <div class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-700 mb-3">What are you looking for?</h3>
+                        <div class="grid grid-cols-3 gap-3">
+                            <button class="tab-button flex flex-col items-center justify-center p-3 border border-gray-300 rounded-lg hover:border-indigo-500 active">
+                                <i class="fas fa-book text-2xl text-indigo-600 mb-2"></i>
+                                <span class="text-sm">Notes</span>
+                            </button>
+                            <button class="tab-button flex flex-col items-center justify-center p-3 border border-gray-300 rounded-lg hover:border-indigo-500">
+                                <i class="fas fa-file-alt text-2xl text-gray-600 mb-2"></i>
+                                <span class="text-sm">PYQs</span>
+                            </button>
+                            <button class="tab-button flex flex-col items-center justify-center p-3 border border-gray-300 rounded-lg hover:border-indigo-500">
+                                <i class="fas fa-book-open text-2xl text-gray-600 mb-2"></i>
+                                <span class="text-sm">Books</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="notes-options" class="mb-6">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Select Unit</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white active">All Units</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">Unit 1</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">Unit 2</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">Unit 3</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">Unit 4</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">Unit 5</button>
+                        </div>
+                    </div>
+                    
+                    <div id="pyq-options" class="mb-6 hidden">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Select Year</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white active">All Years</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">2023</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">2022</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">2021</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">2020</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">2019</button>
+                        </div>
+                    </div>
+                    
+                    <div id="book-options" class="mb-6 hidden">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">Select Subject</h3>
+                        <div class="flex flex-wrap gap-2">
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white active">All Subjects</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">Data Structures</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">Database Systems</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">Computer Networks</button>
+                            <button class="category-pill px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm hover:bg-indigo-500 hover:text-white">Artificial Intelligence</button>
+                        </div>
+                    </div>
+                    
+                    <div class="flex items-center mb-4">
+                        <div class="relative flex-grow">
+                            <input type="text" placeholder="Search within selected category" class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                        <button class="ml-3 px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                            <i class="fas fa-filter mr-1"></i> Filters
+                        </button>
+                    </div>
+                </div>
+                
+                <!-- Featured Resources -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Featured Resources</h2>
+                        <a href="#" class="text-indigo-600 text-sm font-medium">View all</a>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="resource-card bg-white rounded-lg shadow overflow-hidden">
+                            <div class="h-32 gradient-bg flex items-center justify-center">
+                                <i class="fas fa-file-pdf text-white text-4xl"></i>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="font-medium text-gray-800">Data Structures Comprehensive Guide</h3>
+                                    <div class="flex flex-col items-end">
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Notes</span>
+                                        <span class="text-xs text-gray-500 mt-1">All Units</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-sm mt-2">Complete guide covering arrays, linked lists, trees, graphs, and more with examples.</p>
+                                <div class="flex items-center mt-3 text-xs text-gray-500">
+                                    <img class="h-5 w-5 rounded-full mr-1" src="https://randomuser.me/api/portraits/women/79.jpg" alt="Profile">
+                                    <span>Priya Patel</span>
+                                    <span class="mx-1">•</span>
+                                    <span>CS301</span>
+                                    <span class="mx-1">•</span>
+                                    <span>Downloaded 245 times</span>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="resource-card bg-white rounded-lg shadow overflow-hidden">
+                            <div class="h-32 bg-gradient-to-r from-purple-500 to-pink-500 flex items-center justify-center">
+                                <i class="fas fa-file-alt text-white text-4xl"></i>
+                            </div>
+                            <div class="p-4">
+                                <div class="flex justify-between items-start">
+                                    <h3 class="font-medium text-gray-800">Database Systems PYQs Collection</h3>
+                                    <div class="flex flex-col items-end">
+                                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">PYQ</span>
+                                        <span class="text-xs text-gray-500 mt-1">2019-2023</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-sm mt-2">Previous year question papers with solutions for Database Systems course.</p>
+                                <div class="flex items-center mt-3 text-xs text-gray-500">
+                                    <img class="h-5 w-5 rounded-full mr-1" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile">
+                                    <span>Rahul Verma</span>
+                                    <span class="mx-1">•</span>
+                                    <span>CS305</span>
+                                    <span class="mx-1">•</span>
+                                    <span>Downloaded 189 times</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Recent Resources -->
+                <div class="mb-6">
+                    <div class="flex justify-between items-center mb-4">
+                        <h2 class="text-xl font-bold text-gray-800">Recent Resources</h2>
+                        <a href="#" class="text-indigo-600 text-sm font-medium">View all</a>
+                    </div>
+                    
+                    <div class="space-y-4">
+                        <!-- Resource 1 -->
+                        <div class="resource-card bg-white rounded-lg shadow">
+                            <div class="p-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded bg-red-100 flex items-center justify-center text-red-600 mr-3">
+                                            <i class="fas fa-file-pdf"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-gray-800">Algorithm Design - Unit 3 Notes</h3>
+                                            <p class="text-xs text-gray-500">PDF • 2.4 MB • Uploaded 2 hours ago</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded">Notes</span>
+                                        <span class="text-xs text-gray-500 mt-1">Unit 3</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-sm mt-3">Comprehensive notes covering greedy algorithms and dynamic programming approaches from Unit 3.</p>
+                                <div class="flex items-center justify-between mt-4">
+                                    <div class="flex items-center text-xs text-gray-500">
+                                        <img class="h-5 w-5 rounded-full mr-1" src="https://randomuser.me/api/portraits/women/79.jpg" alt="Profile">
+                                        <span>Priya Patel</span>
+                                        <span class="mx-1">•</span>
+                                        <span>4th Year</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700">
+                                            Download
+                                        </button>
+                                        <button class="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200">
+                                            <i class="far fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Resource 2 -->
+                        <div class="resource-card bg-white rounded-lg shadow">
+                            <div class="p-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded bg-purple-100 flex items-center justify-center text-purple-600 mr-3">
+                                            <i class="fas fa-file-alt"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-gray-800">Database Systems PYQs 2022</h3>
+                                            <p class="text-xs text-gray-500">PDF • 1.8 MB • Uploaded 1 day ago</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="bg-purple-100 text-purple-800 text-xs px-2 py-1 rounded">PYQ</span>
+                                        <span class="text-xs text-gray-500 mt-1">2022</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-sm mt-3">Previous year question papers from 2022 with solutions for Database Systems course. Covers SQL, normalization, and transaction management.</p>
+                                <div class="flex items-center justify-between mt-4">
+                                    <div class="flex items-center text-xs text-gray-500">
+                                        <img class="h-5 w-5 rounded-full mr-1" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile">
+                                        <span>Rahul Verma</span>
+                                        <span class="mx-1">•</span>
+                                        <span>3rd Year</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700">
+                                            Download
+                                        </button>
+                                        <button class="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200">
+                                            <i class="far fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Resource 3 -->
+                        <div class="resource-card bg-white rounded-lg shadow">
+                            <div class="p-4">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center">
+                                        <div class="w-10 h-10 rounded bg-green-100 flex items-center justify-center text-green-600 mr-3">
+                                            <i class="fas fa-book-open"></i>
+                                        </div>
+                                        <div>
+                                            <h3 class="font-medium text-gray-800">Computer Networks Textbook</h3>
+                                            <p class="text-xs text-gray-500">PDF • 15.7 MB • Uploaded 3 days ago</p>
+                                        </div>
+                                    </div>
+                                    <div class="flex flex-col items-end">
+                                        <span class="bg-green-100 text-green-800 text-xs px-2 py-1 rounded">Book</span>
+                                        <span class="text-xs text-gray-500 mt-1">Computer Networks</span>
+                                    </div>
+                                </div>
+                                <p class="text-gray-600 text-sm mt-3">Complete textbook on Computer Networks by Tanenbaum. Covers all topics from basics to advanced protocols.</p>
+                                <div class="flex items-center justify-between mt-4">
+                                    <div class="flex items-center text-xs text-gray-500">
+                                        <img class="h-5 w-5 rounded-full mr-1" src="https://randomuser.me/api/portraits/women/45.jpg" alt="Profile">
+                                        <span>Neha Gupta</span>
+                                        <span class="mx-1">•</span>
+                                        <span>3rd Year</span>
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="px-3 py-1 bg-indigo-600 text-white text-xs rounded hover:bg-indigo-700">
+                                            Download
+                                        </button>
+                                        <button class="px-3 py-1 bg-gray-100 text-gray-700 text-xs rounded hover:bg-gray-200">
+                                            <i class="far fa-bookmark"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Load More Button -->
+                <div class="text-center">
+                    <button class="px-6 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200">
+                        Load More Resources
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Right Sidebar -->
+            <div class="w-full md:w-1/4">
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="px-4 py-4 border-b border-gray-200">
+                        <h3 class="font-medium text-gray-800">Top Contributors</h3>
+                    </div>
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <div class="flex items-center">
+                            <img class="h-10 w-10 rounded-full object-cover" src="https://randomuser.me/api/portraits/women/79.jpg" alt="Profile">
+                            <div class="ml-3">
+                                <h4 class="text-sm font-medium text-gray-800">Priya Patel</h4>
+                                <p class="text-xs text-gray-500">42 resources shared</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="inline-flex items-center justify-center w-6 h-6 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full">1</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <div class="flex items-center">
+                            <img class="h-10 w-10 rounded-full object-cover" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile">
+                            <div class="ml-3">
+                                <h4 class="text-sm font-medium text-gray-800">Rahul Verma</h4>
+                                <p class="text-xs text-gray-500">38 resources shared</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="inline-flex items-center justify-center w-6 h-6 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full">2</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3">
+                        <div class="flex items-center">
+                            <img class="h-10 w-10 rounded-full object-cover" src="https://randomuser.me/api/portraits/women/45.jpg" alt="Profile">
+                            <div class="ml-3">
+                                <h4 class="text-sm font-medium text-gray-800">Neha Gupta</h4>
+                                <p class="text-xs text-gray-500">31 resources shared</p>
+                            </div>
+                            <div class="ml-auto">
+                                <span class="inline-flex items-center justify-center w-6 h-6 bg-indigo-100 text-indigo-800 text-xs font-medium rounded-full">3</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3 border-t border-gray-100">
+                        <a href="#" class="text-indigo-600 text-sm font-medium">View all contributors</a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow mb-6">
+                    <div class="px-4 py-4 border-b border-gray-200">
+                        <h3 class="font-medium text-gray-800">Upcoming Deadlines</h3>
+                    </div>
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded bg-red-100 flex items-center justify-center text-red-600 mr-3">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">CS401 Project Proposal</h4>
+                                <p class="text-xs text-gray-500">Due in 2 days • Nov 10</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded bg-yellow-100 flex items-center justify-center text-yellow-600 mr-3">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">CS305 Midterm Exam</h4>
+                                <p class="text-xs text-gray-500">Due in 5 days • Nov 13</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded bg-green-100 flex items-center justify-center text-green-600 mr-3">
+                                <i class="fas fa-calendar-day"></i>
+                            </div>
+                            <div>
+                                <h4 class="text-sm font-medium text-gray-800">CS310 Lab Report</h4>
+                                <p class="text-xs text-gray-500">Due in 7 days • Nov 15</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3 border-t border-gray-100">
+                        <a href="#" class="text-indigo-600 text-sm font-medium">View all deadlines</a>
+                    </div>
+                </div>
+                
+                <div class="bg-white rounded-lg shadow">
+                    <div class="px-4 py-4 border-b border-gray-200 flex justify-between items-center">
+                        <h3 class="font-medium text-gray-800">Connections</h3>
+                        <a href="#" class="text-indigo-600 text-sm">See all</a>
+                    </div>
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <div class="flex items-center">
+                            <img class="h-10 w-10 rounded-full object-cover" src="https://randomuser.me/api/portraits/women/79.jpg" alt="Profile">
+                            <div class="ml-3">
+                                <h4 class="text-sm font-medium text-gray-800">Priya Patel</h4>
+                                <p class="text-xs text-gray-500">Computer Science, 4th Year</p>
+                            </div>
+                            <button class="ml-auto text-indigo-600 text-sm">
+                                <i class="fas fa-comment-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3 border-b border-gray-100">
+                        <div class="flex items-center">
+                            <img class="h-10 w-10 rounded-full object-cover" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile">
+                            <div class="ml-3">
+                                <h4 class="text-sm font-medium text-gray-800">Rahul Verma</h4>
+                                <p class="text-xs text-gray-500">Computer Science, 3rd Year</p>
+                            </div>
+                            <button class="ml-auto text-indigo-600 text-sm">
+                                <i class="fas fa-comment-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="px-4 py-3">
+                        <div class="flex items-center">
+                            <img class="h-10 w-10 rounded-full object-cover" src="https://randomuser.me/api/portraits/women/45.jpg" alt="Profile">
+                            <div class="ml-3">
+                                <h4 class="text-sm font-medium text-gray-800">Neha Gupta</h4>
+                                <p class="text-xs text-gray-500">Computer Science, 3rd Year</p>
+                            </div>
+                            <button class="ml-auto text-indigo-600 text-sm">
+                                <i class="fas fa-comment-alt"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Add Resource Modal -->
+    <div id="resource-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="modal absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl w-full max-w-md">
+            <div class="p-6">
+                <div class="flex justify-between items-center mb-6">
+                    <h3 class="text-xl font-bold text-gray-800">Add Resource</h3>
+                    <button id="close-modal" class="text-gray-400 hover:text-gray-600">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Resource Type</label>
+                    <div class="grid grid-cols-3 gap-3">
+                        <button class="resource-type-btn flex flex-col items-center justify-center p-3 border border-gray-300 rounded-lg hover:border-indigo-500">
+                            <i class="fas fa-book text-2xl text-gray-600 mb-2"></i>
+                            <span class="text-sm text-gray-700">Notes</span>
+                        </button>
+                        <button class="resource-type-btn flex flex-col items-center justify-center p-3 border border-gray-300 rounded-lg hover:border-indigo-500">
+                            <i class="fas fa-file-alt text-2xl text-gray-600 mb-2"></i>
+                            <span class="text-sm text-gray-700">PYQ</span>
+                        </button>
+                        <button class="resource-type-btn flex flex-col items-center justify-center p-3 border border-gray-300 rounded-lg hover:border-indigo-500">
+                            <i class="fas fa-book-open text-2xl text-gray-600 mb-2"></i>
+                            <span class="text-sm text-gray-700">Book</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="resource-title" class="block text-gray-700 text-sm font-medium mb-2">Title</label>
+                    <input type="text" id="resource-title" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Enter resource title">
+                </div>
+                
+                <div class="mb-6">
+                    <label for="resource-description" class="block text-gray-700 text-sm font-medium mb-2">Description</label>
+                    <textarea id="resource-description" rows="3" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Describe your resource"></textarea>
+                </div>
+                
+                <!-- Notes specific options -->
+                <div id="notes-form-options" class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Unit</label>
+                    <select id="notes-unit" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="all">All Units</option>
+                        <option value="unit1">Unit 1</option>
+                        <option value="unit2">Unit 2</option>
+                        <option value="unit3">Unit 3</option>
+                        <option value="unit4">Unit 4</option>
+                        <option value="unit5">Unit 5</option>
+                    </select>
+                </div>
+                
+                <!-- PYQ specific options -->
+                <div id="pyq-form-options" class="mb-6 hidden">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Year</label>
+                    <select id="pyq-year" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="2023">2023</option>
+                        <option value="2022">2022</option>
+                        <option value="2021">2021</option>
+                        <option value="2020">2020</option>
+                        <option value="2019">2019</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <!-- Book specific options -->
+                <div id="book-form-options" class="mb-6 hidden">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Subject</label>
+                    <select id="book-subject" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">Select a subject</option>
+                        <option value="data-structures">Data Structures</option>
+                        <option value="database-systems">Database Systems</option>
+                        <option value="computer-networks">Computer Networks</option>
+                        <option value="artificial-intelligence">Artificial Intelligence</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="resource-course" class="block text-gray-700 text-sm font-medium mb-2">Related Course</label>
+                    <select id="resource-course" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option value="">Select a course</option>
+                        <option value="CS301">CS301: Data Structures</option>
+                        <option value="CS305">CS305: Database Systems</option>
+                        <option value="CS310">CS310: Computer Networks</option>
+                        <option value="CS401">CS401: Artificial Intelligence</option>
+                    </select>
+                </div>
+                
+                <div class="mb-6">
+                    <label for="resource-tags" class="block text-gray-700 text-sm font-medium mb-2">Tags</label>
+                    <input type="text" id="resource-tags" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="Add tags separated by commas">
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Upload File</label>
+                    <div class="border-2 border-dashed border-gray-300 rounded-lg p-6 text-center">
+                        <i class="fas fa-cloud-upload-alt text-3xl text-gray-400 mb-2"></i>
+                        <p class="text-sm text-gray-500">Drag and drop your file here, or <span class="text-indigo-600">browse</span></p>
+                        <p class="text-xs text-gray-400 mt-1">Max file size: 50MB</p>
+                    </div>
+                </div>
+                
+                <div class="mb-6">
+                    <label class="block text-gray-700 text-sm font-medium mb-2">Visibility</label>
+                    <div class="flex items-center space-x-4">
+                        <label class="flex items-center">
+                            <input type="radio" name="visibility" value="public" class="h-4 w-4 text-indigo-600" checked>
+                            <span class="ml-2 text-sm text-gray-700">Public</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="visibility" value="course" class="h-4 w-4 text-indigo-600">
+                            <span class="ml-2 text-sm text-gray-700">Course only</span>
+                        </label>
+                        <label class="flex items-center">
+                            <input type="radio" name="visibility" value="private" class="h-4 w-4 text-indigo-600">
+                            <span class="ml-2 text-sm text-gray-700">Private</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end">
+                    <button id="cancel-resource" class="px-4 py-2 border border-gray-300 rounded-lg text-gray-700 mr-3 hover:bg-gray-50">Cancel</button>
+                    <button id="submit-resource" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Add Resource</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Community Modal -->
+    <div id="community-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="modal absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl w-full max-w-4xl h-3/4">
+            <div class="flex h-full">
+                <!-- Left sidebar - Communities -->
+                <div class="w-1/4 border-r border-gray-200 h-full">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-800">Communities</h3>
+                    </div>
+                    <div class="overflow-y-auto h-[calc(100%-64px)] custom-scrollbar">
+                        <div class="p-4 border-b border-gray-100 bg-indigo-50">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white mr-3">
+                                    <i class="fas fa-laptop-code"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-800">CS301: Data Structures</h4>
+                                    <p class="text-xs text-gray-500">156 members</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-green-600 flex items-center justify-center text-white mr-3">
+                                    <i class="fas fa-database"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-800">CS305: Database Systems</h4>
+                                    <p class="text-xs text-gray-500">124 members</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-white mr-3">
+                                    <i class="fas fa-network-wired"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-800">CS310: Computer Networks</h4>
+                                    <p class="text-xs text-gray-500">98 members</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-yellow-600 flex items-center justify-center text-white mr-3">
+                                    <i class="fas fa-brain"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-800">CS401: Artificial Intelligence</h4>
+                                    <p class="text-xs text-gray-500">112 members</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4 border-b border-gray-100">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 rounded-full bg-red-600 flex items-center justify-center text-white mr-3">
+                                    <i class="fas fa-code"></i>
+                                </div>
+                                <div>
+                                    <h4 class="text-sm font-medium text-gray-800">Programming Club</h4>
+                                    <p class="text-xs text-gray-500">203 members</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <button class="w-full px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 text-sm">
+                                <i class="fas fa-plus mr-2"></i> Create Community
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Right side - Discussion -->
+                <div class="w-3/4 flex flex-col h-full">
+                    <div class="p-4 border-b border-gray-200 flex items-center justify-between">
+                        <div class="flex items-center">
+                            <div class="w-10 h-10 rounded-full bg-indigo-600 flex items-center justify-center text-white mr-3">
+                                <i class="fas fa-laptop-code"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-lg font-bold text-gray-800">CS301: Data Structures</h3>
+                                <p class="text-xs text-gray-500">156 members • 23 online</p>
+                            </div>
+                        </div>
+                        <button id="close-community-modal" class="text-gray-400 hover:text-gray-600">
+                            <i class="fas fa-times text-xl"></i>
+                        </button>
+                    </div>
+                    
+                    <div class="flex-grow overflow-y-auto p-4 custom-scrollbar">
+                        <div class="space-y-4">
+                            <div class="flex">
+                                <img class="h-8 w-8 rounded-full mr-3" src="https://randomuser.me/api/portraits/women/79.jpg" alt="Profile">
+                                <div class="message-bubble received py-2 px-4">
+                                    <div class="flex items-center mb-1">
+                                        <span class="text-xs font-medium text-gray-800">Priya Patel</span>
+                                        <span class="text-xs text-gray-500 ml-2">10:30 AM</span>
+                                    </div>
+                                    <p class="text-sm text-gray-800">Has anyone started working on the assignment due next week?</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <div class="message-bubble sent py-2 px-4">
+                                    <div class="flex items-center justify-end mb-1">
+                                        <span class="text-xs font-medium text-white">You</span>
+                                        <span class="text-xs text-indigo-200 ml-2">10:32 AM</span>
+                                    </div>
+                                    <p class="text-sm text-white">Yes, I've completed the first two problems. The third one is quite challenging.</p>
+                                </div>
+                                <img class="h-8 w-8 rounded-full ml-3" src="https://randomuser.me/api/portraits/men/44.jpg" alt="Profile">
+                            </div>
+                            
+                            <div class="flex">
+                                <img class="h-8 w-8 rounded-full mr-3" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile">
+                                <div class="message-bubble received py-2 px-4">
+                                    <div class="flex items-center mb-1">
+                                        <span class="text-xs font-medium text-gray-800">Rahul Verma</span>
+                                        <span class="text-xs text-gray-500 ml-2">10:35 AM</span>
+                                    </div>
+                                    <p class="text-sm text-gray-800">I'm stuck on problem 3 as well. Anyone has hints on how to approach it?</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex">
+                                <img class="h-8 w-8 rounded-full mr-3" src="https://randomuser.me/api/portraits/women/45.jpg" alt="Profile">
+                                <div class="message-bubble received py-2 px-4">
+                                    <div class="flex items-center mb-1">
+                                        <span class="text-xs font-medium text-gray-800">Neha Gupta</span>
+                                        <span class="text-xs text-gray-500 ml-2">10:38 AM</span>
+                                    </div>
+                                    <p class="text-sm text-gray-800">For problem 3, you need to use dynamic programming. I can share my approach if you want.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex justify-end">
+                                <div class="message-bubble sent py-2 px-4">
+                                    <div class="flex items-center justify-end mb-1">
+                                        <span class="text-xs font-medium text-white">You</span>
+                                        <span class="text-xs text-indigo-200 ml-2">10:40 AM</span>
+                                    </div>
+                                    <p class="text-sm text-white">That would be really helpful, Neha! Thanks.</p>
+                                </div>
+                                <img class="h-8 w-8 rounded-full ml-3" src="https://randomuser.me/api/portraits/men/44.jpg" alt="Profile">
+                            </div>
+                            
+                            <div class="flex">
+                                <img class="h-8 w-8 rounded-full mr-3" src="https://randomuser.me/api/portraits/women/45.jpg" alt="Profile">
+                                <div class="message-bubble received py-2 px-4">
+                                    <div class="flex items-center mb-1">
+                                        <span class="text-xs font-medium text-gray-800">Neha Gupta</span>
+                                        <span class="text-xs text-gray-500 ml-2">10:42 AM</span>
+                                    </div>
+                                    <p class="text-sm text-gray-800">I've uploaded my notes on dynamic programming in the resources section. Check it out, it should help with problem 3.</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex">
+                                <img class="h-8 w-8 rounded-full mr-3" src="https://randomuser.me/api/portraits/men/32.jpg" alt="Profile">
+                                <div class="message-bubble received py-2 px-4">
+                                    <div class="flex items-center mb-1">
+                                        <span class="text-xs font-medium text-gray-800">Rahul Verma</span>
+                                        <span class="text-xs text-gray-500 ml-2">10:45 AM</span>
+                                    </div>
+                                    <p class="text-sm text-gray-800">Thanks Neha! By the way, is anyone planning to attend the guest lecture tomorrow?</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="p-4 border-t border-gray-200">
+                        <div class="flex items-center">
+                            <input type="text" placeholder="Type your message..." class="flex-grow px-4 py-2 border border-gray-300 rounded-l-lg focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                            <button class="px-4 py-2 bg-indigo-600 text-white rounded-r-lg hover:bg-indigo-700">
+                                <i class="fas fa-paper-plane"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Messages Modal -->
+    <div id="messages-modal" class="fixed inset-0 z-50 hidden">
+        <div class="absolute inset-0 bg-black bg-opacity-50"></div>
+        <div class="modal absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white rounded-xl shadow-2xl w-full max-w-4xl h-3/4">
+            <div class="flex h-full">
+                <!-- Left sidebar - Contacts -->
+                <div class="w-1/4 border-r border-gray-200 h-full">
+                    <div class="p-4 border-b border-gray-200">
+                        <h3 class="text-lg font-bold text-gray-800">Messages</h3>
+                        <div class="relative mt-2">
+                            <input type="text" placeholder="Search contacts..." class="w-full px-4 py-2 pr-10 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-sm">
+                            <button class="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="overflow-y-auto h-[calc(100%-104px)] custom-scrollbar">
+                        <div class="p-3 border-b border-gray-100 bg-indigo-50">
+                            <div class="flex items-center">
+                                <img class="h-10 w-10 rounded-full object-cover" src="https://randomuser.me/api/portraits/women/79.jpg" alt="Profile">
+                                <div class="ml-3">
+                                    <h4 class="text-sm font-medium text-gray-800">Priya Patel</h4>
+                                    <p class="text-xs text-gray-500 truncate">Thanks for sharing the notes!</p>
+                                </div>
+                                <div class="ml-auto flex flex-col item

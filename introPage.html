@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Campus Connect</title>
+    <link
+      rel="shortcut icon"
+      href="./assets/faviconImage.png"
+      type="image/x-icon" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap"
+      rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vanilla-tilt/1.7.2/vanilla-tilt.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.11.4/ScrollTrigger.min.js"></script>
+    <style>
+      :root {
+        --primary: #6366f1;
+        --primary-light: #818cf8;
+        --primary-dark: #4f46e5;
+        --white: #ffffff;
+        --light: #f8fafc;
+        --dark: #1e293b;
+        --text: #334155;
+        --shadow: 0 10px 40px rgba(99, 102, 241, 0.2);
+        --transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
+      }
+
+      *,
+      *::after,
+      *::before {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      body {
+        font-family: "Outfit", sans-serif;
+        background-color: var(--white);
+        color: var(--text);
+        overflow-x: hidden;
+        position: relative;
+        min-height: 100vh;
+        perspective: 1000px;
+      }
+
+      /* Intro Animation */
+      .intro-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--primary);
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        z-index: 9999;
+        transition: transform 0.8s cubic-bezier(0.77, 0, 0.175, 1);
+      }
+      #hello__text {
+        margin-top: 35vh;
+      }
+
+      .intro-text {
+        font-size: 5rem;
+        font-weight: 800;
+        color: var(--white);
+        opacity: 0;
+        transform: scale(0.7);
+        transition: all 0.5s ease;
+      }
+
+      .cursor {
+        position: fixed;
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: rgba(99, 102, 241, 0.2);
+        pointer-events: none;
+        mix-blend-mode: difference;
+        transform: translate(-50%, -50%) scale(1);
+        transition: transform 0.15s ease;
+        z-index: 9999;
+        backdrop-filter: blur(4px);
+      }
+
+      .cursor.active {
+        transform: translate(-50%, -50%) scale(1.5);
+        background: rgba(99, 102, 241, 0.4);
+      }
+
+      .cursor-dot {
+        position: fixed;
+        width: 8px;
+        height: 8px;
+        background-color: var(--primary);
+        border-radius: 50%;
+        transform: translate(-50%, -50%);
+        pointer-events: none;
+        z-index: 10000;
+        transition: all 0.1s ease;
+      }
+
+      .bg-gradient {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          125deg,
+          rgba(99, 102, 241, 0.05) 0%,
+          rgba(255, 255, 255, 0) 70%
+        );
+        z-index: -2;
+      }
+
+      .bg-pattern {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%236366f1' fill-opacity='0.05'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E");
+        z-index: -1;
+        opacity: 0.8;
+      }
+
+      .notebook-bg {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-image: linear-gradient(
+            90deg,
+            transparent 79px,
+            #abced4 79px,
+            #abced4 81px,
+            transparent 81px
+          ),
+          linear-gradient(#eee 0.1em, transparent 0.1em);
+        background-size: 100% 1.2em;
+        z-index: -3;
+        opacity: 0.05;
+      }
+
+      .particles {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        z-index: -1;
+        overflow: hidden;
+      }
+
+      .particle {
+        position: absolute;
+        border-radius: 50%;
+        background: var(--primary);
+        opacity: 0.3;
+        animation: float 15s infinite ease-in-out;
+      }
+
+      @keyframes float {
+        0%,
+        100% {
+          transform: translateY(0) translateX(0);
+        }
+        25% {
+          transform: translateY(-100px) translateX(50px);
+        }
+        50% {
+          transform: translateY(-50px) translateX(100px);
+        }
+        75% {
+          transform: translateY(-150px) translateX(-50px);
+        }
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 20px;
+        position: relative;
+        overflow: hidden;
+      }
+
+      .header {
+        position: relative;
+        padding: 20px 0;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        z-index: 10;
+      }
+
+      .logo {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
+      .logo-text {
+        font-weight: 700;
+        font-size: 1.2rem;
+        color: var(--primary);
+        letter-spacing: 1px;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+      }
+
+      .nav-link {
+        color: var(--text);
+        text-decoration: none;
+        font-weight: 500;
+        position: relative;
+        padding: 5px 0;
+        transition: var(--transition);
+      }
+
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--primary);
+        transition: var(--transition);
+      }
+
+      .nav-link:hover {
+        color: var(--primary);
+      }
+
+      .nav-link:hover::after {
+        width: 100%;
+      }
+
+      .hero {
+        position: relative;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 0;
+        overflow: hidden;
+      }
+
+      .wave {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%236366f1' fill-opacity='0.1' d='M0,224L48,213.3C96,203,192,181,288,181.3C384,181,480,203,576,202.7C672,203,768,181,864,181.3C960,181,1056,203,1152,208C1248,213,1344,203,1392,197.3L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+        background-size: cover;
+        background-repeat: no-repeat;
+        z-index: -1;
+      }
+
+      .wave-2 {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 120px;
+        background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1440 320'%3E%3Cpath fill='%236366f1' fill-opacity='0.05' d='M0,288L48,272C96,256,192,224,288,213.3C384,203,480,213,576,229.3C672,245,768,267,864,261.3C960,256,1056,224,1152,208C1248,192,1344,192,1392,192L1440,192L1440,320L1392,320C1344,320,1248,320,1152,320C1056,320,960,320,864,320C768,320,672,320,576,320C480,320,384,320,288,320C192,320,96,320,48,320L0,320Z'%3E%3C/path%3E%3C/svg%3E");
+        background-size: cover;
+        background-repeat: no-repeat;
+        z-index: -1;
+        animation: wave 10s linear infinite;
+      }
+
+      @keyframes wave {
+        0% {
+          background-position-x: 0;
+        }
+        100% {
+          background-position-x: 1440px;
+        }
+      }
+
+      .floating-shapes {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+        z-index: -1;
+      }
+
+      .shape {
+        position: absolute;
+        opacity: 0.2;
+      }
+
+      .shape-1 {
+        top: 20%;
+        left: 10%;
+        width: 60px;
+        height: 60px;
+        background-color: var(--primary);
+        border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%;
+        animation: float-shape 8s infinite ease-in-out;
+      }
+
+      .shape-2 {
+        top: 60%;
+        right: 10%;
+        width: 80px;
+        height: 80px;
+        background-color: var(--primary-light);
+        border-radius: 42% 58% 70% 30% / 45% 45% 55% 55%;
+        animation: float-shape 12s infinite ease-in-out reverse;
+      }
+
+      .shape-3 {
+        bottom: 30%;
+        left: 15%;
+        width: 50px;
+        height: 50px;
+        background-color: var(--primary-dark);
+        border-radius: 50%;
+        animation: float-shape 10s infinite ease-in-out 2s;
+      }
+
+      @keyframes float-shape {
+        0%,
+        100% {
+          transform: translate(0, 0) rotate(0deg);
+        }
+        25% {
+          transform: translate(20px, -30px) rotate(90deg);
+        }
+        50% {
+          transform: translate(40px, 20px) rotate(180deg);
+        }
+        75% {
+          transform: translate(-20px, 40px) rotate(270deg);
+        }
+      }
+
+      #campusConnect__logo {
+        position: relative;
+        margin-bottom: 20px;
+        transform-style: preserve-3d;
+        perspective: 1000px;
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      #campusConnect__logo img {
+        height: 150px;
+        width: 150px;
+        border-radius: 50%;
+        box-shadow: 0 15px 35px rgba(99, 102, 241, 0.3);
+        border: 4px solid white;
+        transition: var(--transition);
+        transform-style: preserve-3d;
+        animation: float-logo 6s ease-in-out infinite;
+      }
+
+      @keyframes float-logo {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0);
+        }
+        50% {
+          transform: translateY(-15px) rotate(5deg);
+        }
+      }
+
+      #campusConnect__logo::before {
+        content: "";
+        position: absolute;
+        bottom: -10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 80px;
+        height: 20px;
+        background: radial-gradient(
+          ellipse at center,
+          rgba(99, 102, 241, 0.3) 0%,
+          rgba(99, 102, 241, 0) 70%
+        );
+        border-radius: 50%;
+        z-index: -1;
+        animation: shadow-pulse 6s ease-in-out infinite;
+      }
+
+      @keyframes shadow-pulse {
+        0%,
+        100% {
+          opacity: 0.5;
+          transform: translateX(-50%) scale(1);
+        }
+        50% {
+          opacity: 0.3;
+          transform: translateX(-50%) scale(0.8);
+        }
+      }
+
+      #welcomeText {
+        text-align: center;
+        margin-bottom: 15px;
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      #welcomeText h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin: 0;
+        line-height: 1.2;
+      }
+
+      #campusConnectText {
+        color: var(--primary);
+        font-weight: 800;
+        position: relative;
+        display: inline-block;
+        background: linear-gradient(
+          to right,
+          var(--primary-dark),
+          var(--primary),
+          var(--primary-light)
+        );
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+      }
+
+      #campusConnectText::after {
+        content: "";
+        position: absolute;
+        bottom: -5px;
+        left: 0;
+        width: 0;
+        height: 3px;
+        background: linear-gradient(
+          to right,
+          var(--primary-dark),
+          var(--primary),
+          var(--primary-light)
+        );
+        transition: width 0.8s cubic-bezier(0.19, 1, 0.22, 1);
+      }
+
+      #campusConnectText:hover::after {
+        width: 100%;
+      }
+
+      #tagline {
+        text-align: center;
+        margin-bottom: 40px;
+        opacity: 0;
+        transform: translateY(30px);
+      }
+
+      #tagline h2 {
+        font-size: 1rem;
+        color: var(--primary);
+        font-weight: 600;
+        letter-spacing: 0.15rem;
+        position: relative;
+        display: inline-block;
+      }
+
+      #tagline h2::before,
+      #tagline h2::after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        width: 30px;
+        height: 1px;
+        background-color: var(--primary);
+        opacity: 0.5;
+      }
+
+      #tagline h2::before {
+        left: -40px;
+      }
+
+      #tagline h2::after {
+        right: -40px;
+      }
+
+      .content {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 60px;
+        padding: 40px 0;
+      }
+
+      #mainText {
+        background: rgba(255, 255, 255, 0.8);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        border-radius: 20px;
+        padding: 40px;
+        box-shadow: 0 15px 35px rgba(99, 102, 241, 0.15);
+        max-width: 800px;
+        width: 100%;
+        border: 1px solid rgba(99, 102, 241, 0.1);
+        position: relative;
+        overflow: hidden;
+        opacity: 0;
+        transform: translateY(50px);
+      }
+
+      #mainText::before {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.3) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        transform: rotate(45deg);
+        animation: shine 6s infinite;
+      }
+
+      @keyframes shine {
+        0% {
+          transform: rotate(45deg) translateX(-100%);
+        }
+        20%,
+        100% {
+          transform: rotate(45deg) translateX(100%);
+        }
+      }
+
+      #mainText pre {
+        font-family: "Outfit", sans-serif;
+        white-space: pre-wrap;
+        line-height: 1.8;
+        color: var(--text);
+        font-size: 1rem;
+        font-weight: 400;
+      }
+
+      .highlight {
+        background: linear-gradient(
+          120deg,
+          rgba(99, 102, 241, 0.2) 0%,
+          rgba(99, 102, 241, 0.1) 100%
+        );
+        padding: 2px 5px;
+        border-radius: 4px;
+        font-weight: 500;
+      }
+
+      #joinButtonContainer {
+        margin-top: 5rem; /* Exactly as requested: 5rem beneath text content */
+        text-align: center;
+        opacity: 0;
+        transform: translateY(30px);
+        margin-bottom: 5rem; /* Added extra margin at the bottom */
+      }
+
+      #joinButton {
+        background: linear-gradient(
+          135deg,
+          var(--primary),
+          var(--primary-dark)
+        );
+        color: white;
+        padding: 16px 45px;
+        border-radius: 50px;
+        text-decoration: none;
+        font-size: 1.2rem;
+        font-weight: 600;
+        letter-spacing: 0.05rem;
+        display: inline-block;
+        box-shadow: 0 10px 25px rgba(99, 102, 241, 0.5);
+        position: relative;
+        overflow: hidden;
+        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        z-index: 1;
+      }
+
+      #joinButton::before {
+        content: "";
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(
+          135deg,
+          var(--primary-dark),
+          var(--primary)
+        );
+        z-index: -1;
+        opacity: 0;
+        transition: opacity 0.5s ease;
+      }
+
+      #joinButton::after {
+        content: "";
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background: linear-gradient(
+          to right,
+          rgba(255, 255, 255, 0) 0%,
+          rgba(255, 255, 255, 0.3) 50%,
+          rgba(255, 255, 255, 0) 100%
+        );
+        transform: rotate(45deg);
+        transition: all 0.5s cubic-bezier(0.19, 1, 0.22, 1);
+        z-index: -1;
+      }
+
+      #joinButton:hover {
+        transform: translateY(-5px) scale(1.05);
+        box-shadow: 0 15px 35px rgba(99, 102, 241, 0.6);
+        letter-spacing: 0.1rem;
+      }
+
+      #joinButton:hover::before {
+        opacity: 1;
+      }
+
+      #joinButton:hover::after {
+        animation: shine-button 1.5s infinite;
+      }
+
+      @keyframes shine-button {
+        0% {
+          transform: rotate(45deg) translateX(-100%);
+        }
+        100% {
+          transform: rotate(45deg) translateX(100%);
+        }
+      }
+
+      /* Responsive Design */
+      @media (max-width: 768px) {
+        .intro-text {
+          font-size: 3rem;
+        }
+
+        #welcomeText h1 {
+          font-size: 2.2rem;
+        }
+
+        #tagline h2 {
+          font-size: 0.9rem;
+        }
+
+        #mainText {
+          padding: 30px;
+        }
+      }
+
+      @media (max-width: 480px) {
+        .intro-text {
+          font-size: 2.5rem;
+        }
+
+        #welcomeText h1 {
+          font-size: 1.8rem;
+        }
+
+        #campusConnect__logo img {
+          height: 120px;
+          width: 120px;
+        }
+
+        #joinButton {
+          padding: 14px 35px;
+          font-size: 1.1rem;
+        }
+
+        #mainText {
+          padding: 25px;
+        }
+
+        #mainText pre {
+          font-size: 0.9rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <!-- Intro Animation -->
+    <div class="intro-overlay">
+      <div class="intro-text" id="hello__text">Namaste!</div>
+    </div>
+
+    <div class="cursor"></div>
+    <div class="cursor-dot"></div>
+    <div class="bg-gradient"></div>
+    <div class="bg-pattern"></div>
+    <div class="notebook-bg"></div>
+
+    <div class="particles">
+      <div
+        class="particle"
+        style="
+          width: 10px;
+          height: 10px;
+          top: 10%;
+          left: 10%;
+          animation-delay: 0s;
+        "></div>
+      <div
+        class="particle"
+        style="
+          width: 15px;
+          height: 15px;
+          top: 20%;
+          left: 80%;
+          animation-delay: 1s;
+        "></div>
+      <div
+        class="particle"
+        style="
+          width: 8px;
+          height: 8px;
+          top: 40%;
+          left: 30%;
+          animation-delay: 2s;
+        "></div>
+      <div
+        class="particle"
+        style="
+          width: 12px;
+          height: 12px;
+          top: 70%;
+          left: 65%;
+          animation-delay: 3s;
+        "></div>
+      <div
+        class="particle"
+        style="
+          width: 6px;
+          height: 6px;
+          top: 80%;
+          left: 15%;
+          animation-delay: 4s;
+        "></div>
+      <div
+        class="particle"
+        style="
+          width: 14px;
+          height: 14px;
+          top: 30%;
+          left: 90%;
+          animation-delay: 5s;
+        "></div>
+      <div
+        class="particle"
+        style="
+          width: 9px;
+          height: 9px;
+          top: 60%;
+          left: 40%;
+          animation-delay: 6s;
+        "></div>
+    </div>
+
+    <div class="floating-shapes">
+      <div class="shape shape-1"></div>
+      <div class="shape shape-2"></div>
+      <div class="shape shape-3"></div>
+    </div>
+
+    <div class="container">
+      <header class="header">
+        <div class="logo">
+          <!-- <svg
+            width="40"
+            height="40"
+            viewBox="0 0 40 40"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <path
+              d="M20 5C11.7157 5 5 11.7157 5 20C5 28.2843 11.7157 35 20 35C28.2843 35 35 28.2843 35 20C35 11.7157 28.2843 5 20 5Z"
+              stroke="#6366F1"
+              stroke-width="2" />
+            <path
+              d="M15 15L25 25"
+              stroke="#6366F1"
+              stroke-width="2"
+              stroke-linecap="round" />
+            <path
+              d="M25 15L15 25"
+              stroke="#6366F1"
+              stroke-width="2"
+              stroke-linecap="round" />
+          </svg> -->
+          <span class="logo-text">CampusConnect</span>
+        </div>
+        <nav class="nav-links">
+          <a href="#" class="nav-link">Home</a>
+          <a href="./login.html" class="nav-link">Register here!</a>
+          <!-- <a href="#" class="nav-link">About</a>
+          <a href="#" class="nav-link">Contact</a> -->
+        </nav>
+      </header>
+
+      <section class="hero">
+        <div class="wave"></div>
+        <div class="wave-2"></div>
+
+        <div id="campusConnect__logo" class="parallax" data-depth="0.2">
+          <img
+            src="./assets/faviconImage.png"
+            alt="The official logo of Campus Connect" />
+        </div>
+
+        <div id="welcomeText">
+          <h1 class="reveal-text">Welcome to</h1>
+          <h1 id="campusConnectText" class="reveal-text">Campus Connect!</h1>
+        </div>
+
+        <div id="tagline">
+          <h2>-YOUR CAMPUS, YOUR COMMUNITY, YOUR CONNECT</h2>
+        </div>
+      </section>
+
+      <section class="content">
+        <div id="mainText" class="reveal">
+          <pre>
+          CampusConnect is an all-in-one digital platform designed to <span class="highlight">simplify student life</span> 
+          by offerring essential academic and campus services in one place. The app allows 
+          students to sign up using Gmail and log in based on their academic year, 
+          ensuring <span class="highlight">personalized experiences</span>.
+
+          Students can access a wide range of resources like <span class="highlight">previous year questions</span>,
+          notes, important questions, books, and lecture playlists. It also fosters a vibrant
+          community where users can engage through comments, discussions, 
+          connections, and <span class="highlight">doubt-solving forums</span>.
+
+          Additional features like campus events calendar, lost & found section, and real-time 
+          notifications make CampusConnect the go-to app for every student's 
+          academic and social needs.
+        </pre>
+        </div>
+
+        <div id="joinButtonContainer">
+          <a href="./login.html" id="joinButton">Get Started!</a>
+        </div>
+      </section>
+    </div>
+
+    <script>
+      // Custom cursor
+      const cursor = document.querySelector(".cursor");
+      const cursorDot = document.querySelector(".cursor-dot");
+
+      document.addEventListener("mousemove", (e) => {
+        cursor.style.left = e.clientX + "px";
+        cursor.style.top = e.clientY + "px";
+
+        // Add a slight delay to the dot for a trailing effect
+        setTimeout(() => {
+          cursorDot.style.left = e.clientX + "px";
+          cursorDot.style.top = e.clientY + "px";
+        }, 50);
+      });
+
+      document.addEventListener("mousedown", () => {
+        cursor.classList.add("active");
+        cursorDot.style.transform = "translate(-50%, -50%) scale(0.5)";
+      });
+
+      document.addEventListener("mouseup", () => {
+        cursor.classList.remove("active");
+        cursorDot.style.transform = "translate(-50%, -50%) scale(1)";
+      });
+
+      // Add hover effect to interactive elements
+      const interactiveElements = document.querySelectorAll("a, button");
+      interactiveElements.forEach((el) => {
+        el.addEventListener("mouseenter", () => {
+          cursor.style.transform = "translate(-50%, -50%) scale(1.5)";
+          cursor.style.backgroundColor = "rgba(99, 102, 241, 0.4)";
+          cursorDot.style.backgroundColor = "#ffffff";
+        });
+
+        el.addEventListener("mouseleave", () => {
+          cursor.style.transform = "translate(-50%, -50%) scale(1)";
+          cursor.style.backgroundColor = "rgba(99, 102, 241, 0.2)";
+          cursorDot.style.backgroundColor = "#6366f1";
+        });
+      });
+
+      // Parallax effect
+      document.addEventListener("mousemove", (e) => {
+        const parallaxElements = document.querySelectorAll(".parallax");
+        const mouseX = e.clientX / window.innerWidth - 0.5;
+        const mouseY = e.clientY / window.innerHeight - 0.5;
+
+        parallaxElements.forEach((el) => {
+          const depth = parseFloat(el.getAttribute("data-depth")) || 0.1;
+          const translateX = mouseX * depth * 100;
+          const translateY = mouseY * depth * 100;
+          el.style.transform = `translate(${translateX}px, ${translateY}px)`;
+        });
+
+        // Move floating shapes
+        const shapes = document.querySelectorAll(".shape");
+        shapes.forEach((shape, index) => {
+          const factor = (index + 1) * 0.1;
+          shape.style.transform = `translate(${mouseX * 50 * factor}px, ${
+            mouseY * 50 * factor
+          }px)`;
+        });
+      });
+
+      // Intro animation
+      document.addEventListener("DOMContentLoaded", () => {
+        const introOverlay = document.querySelector(".intro-overlay");
+        const introText = document.querySelector(".intro-text");
+
+        // Show intro text
+        setTimeout(() => {
+          introText.style.opacity = "1";
+          introText.style.transform = "scale(1)";
+        }, 300);
+
+        // Hide intro overlay
+        setTimeout(() => {
+          introText.style.opacity = "0";
+          introText.style.transform = "scale(1.5)";
+
+          setTimeout(() => {
+            introOverlay.style.transform = "translateY(-100%)";
+
+            // Start main content animations after intro
+            startMainAnimations();
+          }, 500);
+        }, 2000);
+      });
+
+      function startMainAnimations() {
+        // Register ScrollTrigger
+        gsap.registerPlugin(ScrollTrigger);
+
+        // Logo animation
+        gsap.to("#campusConnect__logo", {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          delay: 0.3,
+        });
+
+        // Welcome text animation
+        gsap.to("#welcomeText", {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          delay: 0.6,
+        });
+
+        // Staggered text reveal
+        const welcomeTextElements = document.querySelectorAll(".reveal-text");
+        gsap.fromTo(
+          welcomeTextElements,
+          { y: 30, opacity: 0 },
+          {
+            y: 0,
+            opacity: 1,
+            duration: 0.8,
+            stagger: 0.2,
+            ease: "power3.out",
+            delay: 0.8,
+          }
+        );
+
+        // Tagline animation
+        gsap.to("#tagline", {
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+          delay: 1.2,
+        });
+
+        // Content animations with ScrollTrigger
+        gsap.to("#mainText", {
+          scrollTrigger: {
+            trigger: "#mainText",
+            start: "top 80%",
+            toggleActions: "play none none none",
+          },
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+        });
+
+        // Join button animation
+        gsap.to("#joinButtonContainer", {
+          scrollTrigger: {
+            trigger: "#mainText",
+            start: "bottom 70%",
+            toggleActions: "play none none none",
+          },
+          opacity: 1,
+          y: 0,
+          duration: 1,
+          ease: "power3.out",
+        });
+
+        // Highlight animation for text
+        const highlights = document.querySelectorAll(".highlight");
+        highlights.forEach((highlight) => {
+          gsap.fromTo(
+            highlight,
+            { backgroundColor: "rgba(99, 102, 241, 0)" },
+            {
+              backgroundColor: "rgba(99, 102, 241, 0.2)",
+              duration: 1,
+              scrollTrigger: {
+                trigger: highlight,
+                start: "top 80%",
+                toggleActions: "play none none none",
+              },
+            }
+          );
+        });
+      }
+    </script>
+  </body>
+</html>

@@ -1,0 +1,1659 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>CampusConnect - Login</title>
+    <link
+      rel="shortcut icon"
+      href="./assets/faviconImage.png"
+      type="image/x-icon" />
+  </head>
+  <style>
+    /* Base styles */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI",
+        Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue",
+        sans-serif;
+    }
+
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+    }
+
+    /* Container styles */
+    .login-container {
+      background-color: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      max-width: 28rem;
+      padding: 2rem;
+      position: relative;
+      overflow: hidden;
+      animation: fadeIn 0.8s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Logo and header styles */
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 1rem;
+    }
+
+    .logo-icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 9999px;
+      background-color: #eef2ff;
+      margin-right: 0.5rem;
+    }
+
+    .logo-text {
+      font-size: 1.875rem;
+      font-weight: 700;
+      background: linear-gradient(90deg, #667eea, #764ba2);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      font-family: "Poppins", sans-serif;
+    }
+
+    .text-center {
+      text-align: center;
+    }
+
+    .header-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: #1f2937;
+      margin-top: 1.5rem;
+    }
+
+    .header-subtitle {
+      color: #6b7280;
+      margin-top: 0.5rem;
+    }
+
+    /* Form styles */
+    .form-group {
+      margin-top: 1.5rem;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: #374151;
+      margin-bottom: 0.25rem;
+    }
+
+    .form-input {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      transition: all 0.3s ease;
+    }
+
+    .form-input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .form-select {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      font-size: 1rem;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236B7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
+      background-position: right 0.5rem center;
+      background-repeat: no-repeat;
+      background-size: 1.5em 1.5em;
+    }
+
+    .form-select:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .password-container {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      right: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: #6b7280;
+    }
+
+    .password-toggle:hover {
+      color: #374151;
+    }
+
+    .flex-between {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+    }
+
+    .forgot-password {
+      font-size: 0.875rem;
+      color: #4f46e5;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .forgot-password:hover {
+      color: #4338ca;
+    }
+
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      margin-top: 1.5rem;
+    }
+
+    .checkbox-input {
+      height: 1rem;
+      width: 1rem;
+      color: #4f46e5;
+      border-radius: 0.25rem;
+    }
+
+    .checkbox-label {
+      margin-left: 0.5rem;
+      font-size: 0.875rem;
+      color: #374151;
+    }
+
+    .btn {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s ease;
+    }
+
+    .btn-primary {
+      background-color: #4f46e5;
+      color: white;
+      border: 1px solid transparent;
+      box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+      margin-top: 1.5rem;
+    }
+
+    .btn-primary:hover {
+      background-color: #4338ca;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .btn-secondary {
+      background-color: white;
+      color: #374151;
+      border: 1px solid #d1d5db;
+    }
+
+    .btn-secondary:hover {
+      background-color: #f9fafb;
+    }
+
+    .signup-text {
+      margin-top: 1.5rem;
+      font-size: 0.875rem;
+      color: #6b7280;
+      text-align: center;
+    }
+
+    .signup-link {
+      color: #4f46e5;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .signup-link:hover {
+      color: #4338ca;
+    }
+
+    .divider {
+      display: flex;
+      align-items: center;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .divider-text {
+      font-size: 0.875rem;
+      color: #6b7280;
+      text-align: center;
+      width: 100%;
+      margin-bottom: 1rem;
+    }
+
+    .social-buttons {
+      display: flex;
+      gap: 0.75rem;
+    }
+
+    .social-btn {
+      flex: 1;
+      padding: 0.5rem 1rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      background-color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .social-btn:hover {
+      background-color: #f9fafb;
+    }
+
+    .footer {
+      margin-top: 2rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e5e7eb;
+      text-align: center;
+    }
+
+    .footer-text {
+      font-size: 0.75rem;
+      color: #6b7280;
+    }
+
+    /* Modal styles */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: none;
+    }
+
+    .modal-overlay {
+      position: absolute;
+      inset: 0;
+      background-color: rgba(17, 24, 39, 0.5);
+      animation: overlayFadeIn 0.3s ease-out;
+    }
+
+    @keyframes overlayFadeIn {
+      from {
+        opacity: 0;
+      }
+      to {
+        opacity: 1;
+      }
+    }
+
+    .modal-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      padding: 1rem;
+    }
+
+    .modal-content {
+      position: relative;
+      background-color: white;
+      border-radius: 0.75rem;
+      box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+      width: 100%;
+      max-width: 32rem;
+      padding: 2rem;
+      overflow: hidden;
+      animation: modalFadeIn 0.3s ease-out;
+    }
+
+    @keyframes modalFadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(-50px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      background: none;
+      border: none;
+      color: #9ca3af;
+      cursor: pointer;
+    }
+
+    .modal-close:hover {
+      color: #4b5563;
+    }
+
+    /* Progress bar */
+    .progress-container {
+      margin-bottom: 2rem;
+    }
+
+    .progress-steps {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+
+    .progress-step {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .step-active {
+      color: #4f46e5;
+    }
+
+    .step-inactive {
+      color: #9ca3af;
+    }
+
+    .progress-bar-bg {
+      height: 0.5rem;
+      background-color: #e5e7eb;
+      border-radius: 9999px;
+    }
+
+    .progress-bar {
+      height: 100%;
+      background-color: #4f46e5;
+      border-radius: 9999px;
+      transition: width 0.3s ease;
+    }
+
+    /* OTP input styles */
+    .otp-container {
+      display: flex;
+      justify-content: center;
+      gap: 0.5rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .otp-input {
+      width: 2.5rem;
+      height: 2.5rem;
+      text-align: center;
+      font-size: 1.2rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.375rem;
+    }
+
+    .otp-input:focus {
+      outline: none;
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+    }
+
+    .otp-timer {
+      text-align: center;
+      font-size: 0.875rem;
+      color: #6b7280;
+    }
+
+    .resend-btn {
+      background: none;
+      border: none;
+      color: #4f46e5;
+      font-size: 0.875rem;
+      cursor: pointer;
+      margin-left: 0.5rem;
+    }
+
+    .resend-btn:hover {
+      color: #4338ca;
+    }
+
+    /* Password strength meter */
+    .password-strength-container {
+      margin-top: 0.5rem;
+    }
+
+    .password-strength-bar {
+      display: flex;
+      width: 100%;
+      height: 0.25rem;
+      background-color: #e5e7eb;
+      border-radius: 9999px;
+      overflow: hidden;
+    }
+
+    .password-strength-meter {
+      height: 100%;
+      transition: all 0.3s ease;
+    }
+
+    .password-strength-text {
+      font-size: 0.75rem;
+      color: #6b7280;
+      margin-top: 0.25rem;
+    }
+
+    /* Year selection */
+    .year-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 0.75rem;
+    }
+
+    .year-option {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0.75rem;
+      border: 1px solid #d1d5db;
+      border-radius: 0.5rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .year-option:hover {
+      background-color: #f9fafb;
+    }
+
+    .year-option.selected {
+      background-color: #eef2ff;
+      border-color: #6366f1;
+    }
+
+    .year-text {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    /* Form actions */
+    .form-actions {
+      display: flex;
+      gap: 0.75rem;
+      padding-top: 1rem;
+    }
+
+    /* Notification */
+    .notification {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.75rem 1.5rem;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+        0 2px 4px -1px rgba(0, 0, 0, 0.06);
+      transition: all 0.5s ease;
+      z-index: 100;
+    }
+
+    .notification-success {
+      background-color: #10b981;
+      color: white;
+    }
+
+    .notification-error {
+      background-color: #ef4444;
+      color: white;
+    }
+
+    /* Utility classes */
+    .hidden {
+      display: none;
+    }
+
+    .flex {
+      display: flex;
+    }
+
+    .flex-col {
+      flex-direction: column;
+    }
+
+    .items-center {
+      align-items: center;
+    }
+
+    .justify-center {
+      justify-content: center;
+    }
+
+    .space-x-2 > * + * {
+      margin-left: 0.5rem;
+    }
+
+    .mt-2 {
+      margin-top: 0.5rem;
+    }
+
+    .mt-4 {
+      margin-top: 1rem;
+    }
+
+    .mt-6 {
+      margin-top: 1.5rem;
+    }
+
+    .mb-2 {
+      margin-bottom: 0.5rem;
+    }
+
+    .mb-4 {
+      margin-bottom: 1rem;
+    }
+
+    .w-full {
+      width: 100%;
+    }
+
+    .w-1\/3 {
+      width: 33.333333%;
+    }
+
+    .w-2\/3 {
+      width: 66.666667%;
+    }
+    #campusConnect__logo {
+      height: 3rem;
+      width: 3rem;
+    }
+  </style>
+  <body>
+    <div class="login-container">
+      <div class="text-center">
+        <!-- Logo and Website Name -->
+        <div class="logo-container">
+          <div class="logo-icon">
+            <img
+              src="./assets/faviconImage.png"
+              alt="Campus Connect logo"
+              id="campusConnect__logo" />
+          </div>
+          <h1 class="logo-text">CampusConnect</h1>
+        </div>
+        <h2 class="header-title">Welcome Back</h2>
+        <p class="header-subtitle">Sign in to your account</p>
+      </div>
+
+      <form id="loginForm" action="./adminPage.html">
+        <div class="form-group">
+          <label for="email" class="form-label">Email Address</label>
+          <input
+            id="email"
+            name="email"
+            type="email"
+            autocomplete="email"
+            required
+            class="form-input"
+            placeholder="your@email.com" />
+        </div>
+
+        <div class="form-group">
+          <div class="flex-between">
+            <label for="password" class="form-label">Password</label>
+            <a href="#" class="forgot-password">Forgot password?</a>
+          </div>
+          <div class="password-container">
+            <input
+              id="password"
+              name="password"
+              type="password"
+              autocomplete="current-password"
+              required
+              class="form-input"
+              placeholder="••••••••" />
+            <button type="button" id="togglePassword" class="password-toggle">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="20"
+                height="20"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round">
+                <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path
+                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="checkbox-container">
+          <input
+            id="remember-me"
+            name="remember-me"
+            type="checkbox"
+            class="checkbox-input" />
+          <label for="remember-me" class="checkbox-label">Remember me</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">
+          Sign in to CampusConnect
+        </button>
+      </form>
+
+      <div class="signup-text">
+        Don't have an account?
+        <a href="#" id="signupLink" class="signup-link">Sign up</a>
+      </div>
+
+      <div class="divider">
+        <div class="divider-text">Or continue with</div>
+      </div>
+
+      <div class="social-buttons">
+        <button type="button" class="social-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="#4285F4">
+            <path
+              d="M10 0C4.477 0 0 4.477 0 10c0 4.42 2.865 8.166 6.84 9.49.5.09.68-.22.68-.485 0-.236-.008-.866-.013-1.7-2.782.603-3.37-1.34-3.37-1.34-.454-1.156-1.11-1.464-1.11-1.464-.908-.62.07-.608.07-.608 1.003.07 1.532 1.03 1.532 1.03.892 1.53 2.34 1.088 2.91.833.09-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.09.39-1.984 1.03-2.682-.103-.253-.447-1.27.098-2.646 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0110 2.836c.85.004 1.705.115 2.504.337 1.91-1.296 2.747-1.027 2.747-1.027.546 1.377.203 2.394.1 2.646.64.699 1.026 1.591 1.026 2.682 0 3.841-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.743 0 .267.18.578.688.48C17.14 18.163 20 14.418 20 10c0-5.523-4.477-10-10-10z" />
+          </svg>
+        </button>
+        <button type="button" class="social-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20"
+            fill="#1877F2">
+            <path
+              d="M20 10c0-5.523-4.477-10-10-10S0 4.477 0 10c0 4.991 3.657 9.128 8.438 9.878v-6.987h-2.54V10h2.54V7.797c0-2.506 1.492-3.89 3.777-3.89 1.094 0 2.238.195 2.238.195v2.46h-1.26c-1.243 0-1.63.771-1.63 1.562V10h2.773l-.443 2.89h-2.33v6.988C16.343 19.128 20 14.991 20 10z" />
+          </svg>
+        </button>
+        <button type="button" class="social-btn">
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="20"
+            height="20"
+            viewBox="0 0 20 20">
+            <path
+              d="M17.84 9.5c0-.655-.06-1.29-.171-1.9h-8.264v3.599h4.724a4.02 4.02 0 01-1.752 2.652v2.2h2.835c1.66-1.526 2.618-3.775 2.618-6.551z"
+              fill="#4285F4" />
+            <path
+              d="M9.405 17.5c2.37 0 4.357-.79 5.807-2.149l-2.835-2.2c-.784.528-1.788.838-2.972.838-2.29 0-4.228-1.55-4.924-3.628H1.54v2.275A8.776 8.776 0 009.405 17.5z"
+              fill="#34A853" />
+            <path
+              d="M4.48 10.36a5.264 5.264 0 010-3.36V4.725H1.54a8.77 8.77 0 000 7.85l2.94-2.215z"
+              fill="#FBBC05" />
+            <path
+              d="M9.405 3.605c1.29 0 2.445.444 3.356 1.312l2.516-2.516C13.773.9 11.786 0 9.405 0A8.776 8.776 0 001.54 4.725l2.94 2.275c.696-2.078 2.634-3.395 4.924-3.395z"
+              fill="#EA4335" />
+          </svg>
+        </button>
+      </div>
+
+      <!-- Footer with website name -->
+      <div class="footer">
+        <p class="footer-text">© 2025 CampusConnect. All rights reserved.</p>
+      </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div id="signupModal" class="modal">
+      <div class="modal-overlay"></div>
+
+      <div class="modal-container">
+        <div class="modal-content">
+          <!-- Close button -->
+          <button id="closeSignupModal" class="modal-close">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              width="24"
+              height="24"
+              viewBox="0 0 24 24"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="2"
+              stroke-linecap="round"
+              stroke-linejoin="round">
+              <path d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+
+          <!-- Logo and title -->
+          <div class="text-center">
+            <div class="logo-container">
+              <div class="logo-icon">
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="24"
+                  height="24"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="#4F46E5"
+                  stroke-width="2"
+                  stroke-linecap="round"
+                  stroke-linejoin="round">
+                  <path
+                    d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <h1 class="logo-text">CampusConnect</h1>
+            </div>
+            <h2 class="header-title">Create Your Account</h2>
+            <p class="header-subtitle">Join the campus community</p>
+          </div>
+
+          <!-- Multi-step form -->
+          <div class="mt-6">
+            <!-- Progress bar -->
+            <div class="progress-container">
+              <div class="progress-steps">
+                <span id="step1Indicator" class="progress-step step-active"
+                  >Email Verification</span
+                >
+                <span id="step2Indicator" class="progress-step step-inactive"
+                  >Account Details</span
+                >
+                <span id="step3Indicator" class="progress-step step-inactive"
+                  >Academic Info</span
+                >
+              </div>
+              <div class="progress-bar-bg">
+                <div
+                  id="progressBar"
+                  class="progress-bar"
+                  style="width: 33%"></div>
+              </div>
+            </div>
+
+            <!-- Step 1: Email Verification -->
+            <div id="step1">
+              <div class="form-group">
+                <label for="signupEmail" class="form-label"
+                  >Email Address</label
+                >
+                <div class="flex space-x-2">
+                  <input
+                    id="signupEmail"
+                    name="signupEmail"
+                    type="email"
+                    required
+                    class="form-input"
+                    style="flex: 1"
+                    placeholder="your@email.com" />
+                  <button
+                    type="button"
+                    id="getOtpBtn"
+                    class="btn btn-primary"
+                    style="width: auto; margin-top: 0">
+                    Get OTP
+                  </button>
+                </div>
+              </div>
+
+              <div id="otpSection" class="hidden">
+                <label class="form-label mb-2"
+                  >Enter OTP sent to your email</label
+                >
+                <div class="otp-container">
+                  <input
+                    type="text"
+                    maxlength="1"
+                    class="otp-input"
+                    data-index="1" />
+                  <input
+                    type="text"
+                    maxlength="1"
+                    class="otp-input"
+                    data-index="2" />
+                  <input
+                    type="text"
+                    maxlength="1"
+                    class="otp-input"
+                    data-index="3" />
+                  <input
+                    type="text"
+                    maxlength="1"
+                    class="otp-input"
+                    data-index="4" />
+                </div>
+                <div class="otp-timer">
+                  <span id="otpTimer">OTP expires in: 02:00</span>
+                  <button
+                    type="button"
+                    id="resendOtp"
+                    class="resend-btn hidden">
+                    Resend OTP
+                  </button>
+                </div>
+              </div>
+
+              <div class="mt-6">
+                <button
+                  type="button"
+                  id="verifyOtpBtn"
+                  class="btn btn-primary hidden">
+                  Verify & Continue
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 2: Account Details -->
+            <div id="step2" class="hidden">
+              <div class="form-group">
+                <label for="signupPassword" class="form-label"
+                  >Create Password</label
+                >
+                <div class="password-container">
+                  <input
+                    id="signupPassword"
+                    name="signupPassword"
+                    type="password"
+                    required
+                    class="form-input"
+                    placeholder="••••••••" />
+                  <button
+                    type="button"
+                    id="toggleSignupPassword"
+                    class="password-toggle">
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      width="20"
+                      height="20"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="2"
+                      stroke-linecap="round"
+                      stroke-linejoin="round">
+                      <path d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                      <path
+                        d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    </svg>
+                  </button>
+                </div>
+
+                <!-- Password strength meter -->
+                <div class="password-strength-container">
+                  <div class="password-strength-bar">
+                    <div
+                      id="passwordStrength"
+                      class="password-strength-meter"
+                      style="width: 0%; background-color: #ef4444"></div>
+                  </div>
+                  <p id="passwordStrengthText" class="password-strength-text">
+                    Password strength: Too weak
+                  </p>
+                </div>
+              </div>
+
+              <div class="form-group">
+                <label for="confirmPassword" class="form-label"
+                  >Confirm Password</label
+                >
+                <div class="password-container">
+                  <input
+                    id="confirmPassword"
+                    name="confirmPassword"
+                    type="password"
+                    required
+                    class="form-input"
+                    placeholder="••••••••" />
+                </div>
+                <p id="passwordMatch" class="password-strength-text hidden">
+                  Passwords match
+                </p>
+              </div>
+
+              <div class="form-actions">
+                <button
+                  type="button"
+                  id="backToStep1"
+                  class="btn btn-secondary w-1/3">
+                  Back
+                </button>
+                <button
+                  type="button"
+                  id="goToStep3"
+                  class="btn btn-primary w-2/3">
+                  Continue
+                </button>
+              </div>
+            </div>
+
+            <!-- Step 3: Academic Info -->
+            <div id="step3" class="hidden">
+              <div class="form-group">
+                <label for="college" class="form-label"
+                  >Select Your College</label
+                >
+                <select
+                  id="college"
+                  name="college"
+                  required
+                  class="form-select">
+                  <option value="" disabled selected>
+                    Select your college
+                  </option>
+                  <option value="iitb">
+                    Indian institute of technology Bombay
+                  </option>
+                  <option value="iitd">
+                    Indian Institute of Technology Delhi
+                  </option>
+                  <option value="iitkgp">
+                    Indian institute of technology Kharagpur
+                  </option>
+                  <option value="iitInd">
+                    Indian Institute of Technology Indore
+                  </option>
+                  <option value="iitm">
+                    Indian institute of Technology Madras
+                  </option>
+                  <option value="iitr">
+                    Indian institute of technology Ropar
+                  </option>
+                  <option value="columbia">Columbia University</option>
+                  <option value="chicago">University of Chicago</option>
+                  <option value="upenn">University of Pennsylvania</option>
+                  <option value="jhu">Johns Hopkins University</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label for="degree" class="form-label">Degree Program</label>
+                <select id="degree" name="degree" required class="form-select">
+                  <option value="" disabled selected>
+                    Select your degree program
+                  </option>
+                  <option value="cs">Computer Science</option>
+                  <option value="eng">Engineering</option>
+                  <option value="business">Business Administration</option>
+                  <option value="medicine">Medicine</option>
+                  <option value="law">Law</option>
+                  <option value="arts">Liberal Arts</option>
+                  <option value="science">Natural Sciences</option>
+                  <option value="math">Mathematics</option>
+                  <option value="economics">Economics</option>
+                  <option value="psychology">Psychology</option>
+                </select>
+              </div>
+
+              <div class="form-group">
+                <label class="form-label mb-2">Year of Study</label>
+                <div class="year-grid">
+                  <label class="year-option">
+                    <input type="radio" name="year" value="1" class="hidden" />
+                    <span class="year-text">Year 1</span>
+                  </label>
+                  <label class="year-option">
+                    <input type="radio" name="year" value="2" class="hidden" />
+                    <span class="year-text">Year 2</span>
+                  </label>
+                  <label class="year-option">
+                    <input type="radio" name="year" value="3" class="hidden" />
+                    <span class="year-text">Year 3</span>
+                  </label>
+                  <label class="year-option">
+                    <input type="radio" name="year" value="4" class="hidden" />
+                    <span class="year-text">Year 4</span>
+                  </label>
+                  <label class="year-option">
+                    <input
+                      type="radio"
+                      name="year"
+                      value="alumni"
+                      class="hidden" />
+                    <span class="year-text">Alumni</span>
+                  </label>
+                </div>
+              </div>
+
+              <div class="form-actions">
+                <button
+                  type="button"
+                  id="backToStep2"
+                  class="btn btn-secondary w-1/3">
+                  Back
+                </button>
+                <button
+                  type="button"
+                  id="completeSignup"
+                  class="btn btn-primary w-2/3">
+                  Complete Sign Up
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        // Login page functionality
+        const togglePassword = document.getElementById("togglePassword");
+        const password = document.getElementById("password");
+
+        togglePassword.addEventListener("click", function () {
+          const type =
+            password.getAttribute("type") === "password" ? "text" : "password";
+          password.setAttribute("type", type);
+
+          // Change the eye icon
+          const eyeIcon = this.querySelector("svg");
+          if (type === "text") {
+            eyeIcon.innerHTML = `
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    `;
+          } else {
+            eyeIcon.innerHTML = `
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    `;
+          }
+        });
+
+        // Form submission
+        const loginForm = document.getElementById("loginForm");
+        loginForm.addEventListener("submit", function (e) {
+          e.preventDefault();
+
+          const email = document.getElementById("email").value;
+          const password = document.getElementById("password").value;
+
+          // Simple validation
+          if (!email || !password) {
+            showNotification("Please fill in all fields", "error");
+            return;
+          }
+
+          // Simulate login process
+          showLoadingState(true);
+
+          // Simulate API call with timeout
+          setTimeout(function () {
+            showLoadingState(false);
+
+            // Check credentials (in a real app, this would be done server-side)
+            if (email.includes("@") && password.length >= 6) {
+              // Success - in a real app, this would redirect to dashboard
+              showNotification("Login successful! Redirecting...", "success");
+
+              // Simulate redirect after successful login
+              setTimeout(function () {
+                // This would redirect to dashboard in a real application
+                showNotification("Welcome to CampusConnect!", "success");
+              }, 1500);
+              setTimeout(() => {
+                window.location.href = "./adminPage.html";
+              }, 1500);
+            } else {
+              // Error
+              showNotification("Invalid email or password", "error");
+            }
+          }, 1000);
+        });
+
+        // Show loading state on button
+        function showLoadingState(isLoading) {
+          const button = loginForm.querySelector('button[type="submit"]');
+
+          if (isLoading) {
+            button.disabled = true;
+            button.innerHTML = `
+                        <svg class="animate-spin" style="animation: spin 1s linear infinite; margin-right: 0.75rem;" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                        </svg>
+                        Signing in...
+                    `;
+          } else {
+            button.disabled = false;
+            button.innerHTML = "Sign in to CampusConnect";
+          }
+        }
+
+        // Show notification
+        function showNotification(message, type) {
+          // Remove existing notification
+          const existingNotification = document.querySelector(".notification");
+          if (existingNotification) {
+            existingNotification.remove();
+          }
+
+          // Create notification element
+          const notification = document.createElement("div");
+          notification.className = `notification notification-${
+            type === "success" ? "success" : "error"
+          }`;
+          notification.innerHTML = message;
+
+          // Add to DOM
+          document.body.appendChild(notification);
+
+          // Remove after delay
+          setTimeout(() => {
+            notification.style.opacity = "0";
+            notification.style.transform = "translateY(-1rem)";
+
+            setTimeout(() => {
+              notification.remove();
+            }, 300);
+          }, 3000);
+        }
+
+        // Social login buttons
+        const socialButtons = document.querySelectorAll(".social-btn");
+        socialButtons.forEach((button) => {
+          button.addEventListener("click", function () {
+            showNotification("Social login coming soon!", "success");
+          });
+        });
+
+        // Forgot password link
+        const forgotPasswordLink = document.querySelector(".forgot-password");
+        forgotPasswordLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          showNotification("Password reset feature coming soon!", "success");
+        });
+
+        // Sign up modal functionality
+        const signupLink = document.getElementById("signupLink");
+        const signupModal = document.getElementById("signupModal");
+        const closeSignupModal = document.getElementById("closeSignupModal");
+
+        signupLink.addEventListener("click", function (e) {
+          e.preventDefault();
+          signupModal.style.display = "block";
+          document.body.style.overflow = "hidden"; // Prevent scrolling when modal is open
+        });
+
+        closeSignupModal.addEventListener("click", function () {
+          signupModal.style.display = "none";
+          document.body.style.overflow = "";
+        });
+
+        // Close modal when clicking outside
+        signupModal.addEventListener("click", function (e) {
+          if (
+            e.target === signupModal ||
+            e.target.classList.contains("modal-overlay")
+          ) {
+            signupModal.style.display = "none";
+            document.body.style.overflow = "";
+          }
+        });
+
+        // Multi-step form navigation
+        const step1 = document.getElementById("step1");
+        const step2 = document.getElementById("step2");
+        const step3 = document.getElementById("step3");
+        const step1Indicator = document.getElementById("step1Indicator");
+        const step2Indicator = document.getElementById("step2Indicator");
+        const step3Indicator = document.getElementById("step3Indicator");
+        const progressBar = document.getElementById("progressBar");
+
+        // Step 1: Email verification
+        const getOtpBtn = document.getElementById("getOtpBtn");
+        const otpSection = document.getElementById("otpSection");
+        const verifyOtpBtn = document.getElementById("verifyOtpBtn");
+        const otpTimer = document.getElementById("otpTimer");
+        const resendOtp = document.getElementById("resendOtp");
+        const signupEmail = document.getElementById("signupEmail");
+
+        getOtpBtn.addEventListener("click", function () {
+          const email = signupEmail.value;
+          if (!email || !email.includes("@")) {
+            showNotification("Please enter a valid email address", "error");
+            return;
+          }
+
+          // Show OTP section
+          otpSection.classList.remove("hidden");
+          verifyOtpBtn.classList.remove("hidden");
+
+          // Disable email field and button
+          signupEmail.disabled = true;
+          getOtpBtn.disabled = true;
+          getOtpBtn.style.backgroundColor = "#9CA3AF";
+          getOtpBtn.style.cursor = "not-allowed";
+
+          // Show notification
+          showNotification("OTP sent to your email", "success");
+
+          // Start OTP timer
+          startOtpTimer();
+
+          // Focus on first OTP input
+          document.querySelector('.otp-input[data-index="1"]').focus();
+        });
+
+        // OTP input handling
+        const otpInputs = document.querySelectorAll(".otp-input");
+        otpInputs.forEach((input) => {
+          input.addEventListener("input", function () {
+            if (this.value.length === 1) {
+              const nextIndex = parseInt(this.getAttribute("data-index")) + 1;
+              const nextInput = document.querySelector(
+                `.otp-input[data-index="${nextIndex}"]`
+              );
+              if (nextInput) {
+                nextInput.focus();
+              }
+            }
+          });
+
+          input.addEventListener("keydown", function (e) {
+            if (e.key === "Backspace" && this.value === "") {
+              const prevIndex = parseInt(this.getAttribute("data-index")) - 1;
+              const prevInput = document.querySelector(
+                `.otp-input[data-index="${prevIndex}"]`
+              );
+              if (prevInput) {
+                prevInput.focus();
+              }
+            }
+          });
+        });
+
+        // OTP timer
+        function startOtpTimer() {
+          let timeLeft = 120; // 2 minutes
+          const timerInterval = setInterval(function () {
+            timeLeft--;
+            const minutes = Math.floor(timeLeft / 60);
+            const seconds = timeLeft % 60;
+            otpTimer.textContent = `OTP expires in: ${minutes
+              .toString()
+              .padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+
+            if (timeLeft <= 0) {
+              clearInterval(timerInterval);
+              otpTimer.textContent = "OTP expired";
+              resendOtp.classList.remove("hidden");
+            }
+          }, 1000);
+
+          // Reset timer if resend is clicked
+          resendOtp.addEventListener("click", function () {
+            clearInterval(timerInterval);
+            resendOtp.classList.add("hidden");
+            showNotification("New OTP sent to your email", "success");
+            startOtpTimer();
+
+            // Clear OTP inputs
+            otpInputs.forEach((input) => {
+              input.value = "";
+            });
+            otpInputs[0].focus();
+          });
+        }
+
+        // Verify OTP and go to step 2
+        verifyOtpBtn.addEventListener("click", function () {
+          let otp = "";
+          let isComplete = true;
+
+          otpInputs.forEach((input) => {
+            if (!input.value) {
+              isComplete = false;
+            }
+            otp += input.value;
+          });
+
+          if (!isComplete) {
+            showNotification("Please enter the complete OTP", "error");
+            return;
+          }
+
+          // For demo, any 4-digit OTP is accepted
+          if (otp.length === 4) {
+            // Go to step 2
+            step1.classList.add("hidden");
+            step2.classList.remove("hidden");
+
+            // Update indicators
+            step1Indicator.classList.remove("step-active");
+            step1Indicator.classList.add("step-inactive");
+            step2Indicator.classList.remove("step-inactive");
+            step2Indicator.classList.add("step-active");
+
+            // Update progress bar
+            progressBar.style.width = "66%";
+
+            showNotification("Email verified successfully", "success");
+          } else {
+            showNotification("Invalid OTP. Please try again", "error");
+          }
+        });
+
+        // Step 2: Password setup
+        const signupPassword = document.getElementById("signupPassword");
+        const confirmPassword = document.getElementById("confirmPassword");
+        const passwordStrength = document.getElementById("passwordStrength");
+        const passwordStrengthText = document.getElementById(
+          "passwordStrengthText"
+        );
+        const passwordMatch = document.getElementById("passwordMatch");
+        const toggleSignupPassword = document.getElementById(
+          "toggleSignupPassword"
+        );
+        const backToStep1 = document.getElementById("backToStep1");
+        const goToStep3 = document.getElementById("goToStep3");
+
+        // Toggle password visibility
+        toggleSignupPassword.addEventListener("click", function () {
+          const type =
+            signupPassword.getAttribute("type") === "password"
+              ? "text"
+              : "password";
+          signupPassword.setAttribute("type", type);
+
+          // Change the eye icon
+          const eyeIcon = this.querySelector("svg");
+          if (type === "text") {
+            eyeIcon.innerHTML = `
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+                    `;
+          } else {
+            eyeIcon.innerHTML = `
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+                    `;
+          }
+        });
+
+        // Password strength meter
+        signupPassword.addEventListener("input", function () {
+          const password = this.value;
+          let strength = 0;
+
+          if (password.length >= 8) strength += 25;
+          if (password.match(/[a-z]+/)) strength += 25;
+          if (password.match(/[A-Z]+/)) strength += 25;
+          if (password.match(/[0-9]+/) || password.match(/[^a-zA-Z0-9]+/))
+            strength += 25;
+
+          passwordStrength.style.width = strength + "%";
+
+          if (strength <= 25) {
+            passwordStrength.style.backgroundColor = "#EF4444";
+            passwordStrengthText.textContent = "Password strength: Too weak";
+          } else if (strength <= 50) {
+            passwordStrength.style.backgroundColor = "#F59E0B";
+            passwordStrengthText.textContent = "Password strength: Weak";
+          } else if (strength <= 75) {
+            passwordStrength.style.backgroundColor = "#FBBF24";
+            passwordStrengthText.textContent = "Password strength: Good";
+          } else {
+            passwordStrength.style.backgroundColor = "#10B981";
+            passwordStrengthText.textContent = "Password strength: Strong";
+          }
+
+          // Check if passwords match
+          checkPasswordMatch();
+        });
+
+        // Check if passwords match
+        confirmPassword.addEventListener("input", checkPasswordMatch);
+
+        function checkPasswordMatch() {
+          if (confirmPassword.value && signupPassword.value) {
+            if (confirmPassword.value === signupPassword.value) {
+              passwordMatch.textContent = "Passwords match";
+              passwordMatch.style.color = "#10B981";
+              passwordMatch.classList.remove("hidden");
+            } else {
+              passwordMatch.textContent = "Passwords do not match";
+              passwordMatch.style.color = "#EF4444";
+              passwordMatch.classList.remove("hidden");
+            }
+          } else {
+            passwordMatch.classList.add("hidden");
+          }
+        }
+
+        // Back to step 1
+        backToStep1.addEventListener("click", function () {
+          step2.classList.add("hidden");
+          step1.classList.remove("hidden");
+
+          // Update indicators
+          step2Indicator.classList.remove("step-active");
+          step2Indicator.classList.add("step-inactive");
+          step1Indicator.classList.remove("step-inactive");
+          step1Indicator.classList.add("step-active");
+
+          // Update progress bar
+          progressBar.style.width = "33%";
+        });
+
+        // Go to step 3
+        goToStep3.addEventListener("click", function () {
+          if (!signupPassword.value || !confirmPassword.value) {
+            showNotification("Please fill in all password fields", "error");
+            return;
+          }
+
+          if (signupPassword.value !== confirmPassword.value) {
+            showNotification("Passwords do not match", "error");
+            return;
+          }
+
+          if (signupPassword.value.length < 8) {
+            showNotification("Password must be at least 8 characters", "error");
+            return;
+          }
+
+          // Go to step 3
+          step2.classList.add("hidden");
+          step3.classList.remove("hidden");
+
+          // Update indicators
+          step2Indicator.classList.remove("step-active");
+          step2Indicator.classList.add("step-inactive");
+          step3Indicator.classList.remove("step-inactive");
+          step3Indicator.classList.add("step-active");
+
+          // Update progress bar
+          progressBar.style.width = "100%";
+        });
+
+        // Step 3: Academic Info
+        const backToStep2 = document.getElementById("backToStep2");
+        const completeSignup = document.getElementById("completeSignup");
+        const college = document.getElementById("college");
+        const degree = document.getElementById("degree");
+        const yearOptions = document.querySelectorAll('input[name="year"]');
+
+        // Year of study selection
+        const yearLabels = document.querySelectorAll(".year-option");
+        yearOptions.forEach((radio, index) => {
+          radio.addEventListener("change", function () {
+            // Reset all labels
+            yearLabels.forEach((label) => {
+              label.classList.remove("selected");
+            });
+
+            // Highlight selected label
+            if (this.checked) {
+              yearLabels[index].classList.add("selected");
+            }
+          });
+        });
+
+        // Back to step 2
+        backToStep2.addEventListener("click", function () {
+          step3.classList.add("hidden");
+          step2.classList.remove("hidden");
+
+          // Update indicators
+          step3Indicator.classList.remove("step-active");
+          step3Indicator.classList.add("step-inactive");
+          step2Indicator.classList.remove("step-inactive");
+          step2Indicator.classList.add("step-active");
+
+          // Update progress bar
+          progressBar.style.width = "66%";
+        });
+
+        // Complete signup
+        completeSignup.addEventListener("click", function () {
+          // Validate form
+          if (!college.value) {
+            showNotification("Please select your college", "error");
+            return;
+          }
+
+          if (!degree.value) {
+            showNotification("Please select your degree program", "error");
+            return;
+          }
+
+          let yearSelected = false;
+          yearOptions.forEach((radio) => {
+            if (radio.checked) {
+              yearSelected = true;
+            }
+          });
+
+          if (!yearSelected) {
+            showNotification("Please select your year of study", "error");
+            return;
+          }
+
+          // Show loading state
+          completeSignup.disabled = true;
+          completeSignup.innerHTML = `
+                    <svg style="animation: spin 1s linear infinite; margin-right: 0.75rem;" xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
+                    Creating Account...
+                `;
+
+          // Simulate API call
+          setTimeout(function () {
+            // Close modal
+            signupModal.style.display = "none";
+            document.body.style.overflow = "";
+
+            // Show success notification
+            showNotification(
+              "Account created successfully! You can now log in.",
+              "success"
+            );
+
+            // Reset form for next time
+            resetSignupForm();
+          }, 1500);
+        });
+
+        // Reset signup form
+        function resetSignupForm() {
+          // Reset step 1
+          signupEmail.value = "";
+          signupEmail.disabled = false;
+          getOtpBtn.disabled = false;
+          getOtpBtn.style.backgroundColor = "";
+          getOtpBtn.style.cursor = "";
+          otpSection.classList.add("hidden");
+          verifyOtpBtn.classList.add("hidden");
+          otpInputs.forEach((input) => {
+            input.value = "";
+          });
+
+          // Reset step 2
+          signupPassword.value = "";
+          confirmPassword.value = "";
+          passwordStrength.style.width = "0%";
+          passwordStrength.style.backgroundColor = "#EF4444";
+          passwordStrengthText.textContent = "Password strength: Too weak";
+          passwordMatch.classList.add("hidden");
+
+          // Reset step 3
+          college.selectedIndex = 0;
+          degree.selectedIndex = 0;
+          yearOptions.forEach((radio) => {
+            radio.checked = false;
+          });
+          yearLabels.forEach((label) => {
+            label.classList.remove("selected");
+          });
+
+          // Reset button
+          completeSignup.disabled = false;
+          completeSignup.innerHTML = "Complete Sign Up";
+
+          // Show step 1
+          step1.classList.remove("hidden");
+          step2.classList.add("hidden");
+          step3.classList.add("hidden");
+
+          // Reset indicators
+          step1Indicator.classList.add("step-active");
+          step1Indicator.classList.remove("step-inactive");
+          step2Indicator.classList.add("step-inactive");
+          step2Indicator.classList.remove("step-active");
+          step3Indicator.classList.add("step-inactive");
+          step3Indicator.classList.remove("step-active");
+
+          // Reset progress bar
+          progressBar.style.width = "33%";
+        }
+
+        // Add keyframe animation for spin
+        const style = document.createElement("style");
+        style.textContent = `
+                @keyframes spin {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+            `;
+        document.head.appendChild(style);
+      });
+    </script>
+  </body>
+</html>

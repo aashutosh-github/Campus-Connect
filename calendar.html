@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>College Attendance Planner</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", sans-serif;
+        transition: all 0.3s ease-in-out;
+      }
+
+      body {
+        background-color: #f0f6ff;
+        padding: 20px;
+      }
+
+      header {
+        background-color: #4f83f1;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        text-align: center;
+        margin-bottom: 30px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .layout {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 20px;
+      }
+
+      .card {
+        background-color: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      }
+
+      .card:hover {
+        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      }
+
+      .card h2 {
+        color: #3469d1;
+        margin-bottom: 15px;
+        border-bottom: 2px solid #dbeafe;
+        padding-bottom: 10px;
+      }
+
+      .form-group {
+        margin-bottom: 15px;
+      }
+
+      label {
+        display: block;
+        margin-bottom: 6px;
+        font-weight: 600;
+        color: #333;
+      }
+
+      input[type="number"] {
+        width: 100%;
+        padding: 10px;
+        border-radius: 6px;
+        border: 1px solid #ccc;
+        font-size: 14px;
+      }
+
+      .days-checkboxes label {
+        display: inline-block;
+        margin-right: 10px;
+        font-weight: 500;
+        color: #333;
+        margin-top: 5px;
+      }
+
+      .days-checkboxes input {
+        margin-right: 5px;
+      }
+
+      button {
+        width: 100%;
+        padding: 12px;
+        background-color: #4f83f1;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+
+      button:hover {
+        background-color: #3d6ed1;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .result {
+        margin-top: 15px;
+        font-weight: bold;
+        color: #1e3a8a;
+      }
+
+      .info-box {
+        margin-top: 20px;
+        background-color: #e4edff;
+        padding: 15px;
+        border-radius: 10px;
+        color: #1e40af;
+      }
+
+      ul {
+        list-style: none;
+        padding-left: 0;
+      }
+
+      li {
+        margin-bottom: 10px;
+        color: #333;
+      }
+
+      .icon {
+        margin-right: 5px;
+        color: #1e40af;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>College Attendance Planner</h1>
+    </header>
+
+    <div class="layout">
+      <div class="card">
+        <h2>Attendance Calculator</h2>
+        <div class="form-group">
+          <label>Total College Days</label>
+          <input
+            type="number"
+            id="totalDays"
+            placeholder="Enter total number of days" />
+        </div>
+        <div class="form-group">
+          <label>Select Preferred Days to Attend:</label>
+          <div class="days-checkboxes">
+            <label><input type="checkbox" value="Mon" /> Mon</label>
+            <label><input type="checkbox" value="Tue" /> Tue</label>
+            <label><input type="checkbox" value="Wed" /> Wed</label>
+            <label><input type="checkbox" value="Thu" /> Thu</label>
+            <label><input type="checkbox" value="Fri" /> Fri</label>
+          </div>
+        </div>
+        <button onclick="calculatePlan()">Calculate</button>
+        <div class="result" id="result"></div>
+        <div class="info-box">
+          <strong>How it works</strong>
+          <p>
+            To maintain 75% attendance, you need to attend at least 75% of the
+            total college days. This calculator helps you plan which days to
+            attend each week.
+          </p>
+        </div>
+      </div>
+
+      <div>
+        <div class="card">
+          <h2>College Holidays</h2>
+          <ul>
+            <li><span class="icon">✔️</span> Jan 1: New Year's Day</li>
+            <li><span class="icon">✔️</span> Jan 26: Republic Day</li>
+            <li><span class="icon">✔️</span> Mar 8: Holi</li>
+            <li><span class="icon">✔️</span> Aug 15: Independence Day</li>
+            <li><span class="icon">✔️</span> Oct 2: Gandhi Jayanti</li>
+          </ul>
+        </div>
+        <div class="card" style="margin-top: 20px">
+          <h2>College Events</h2>
+          <ul>
+            <li><span class="icon">📅</span> Feb 15-17: Annual Tech Fest</li>
+            <li><span class="icon">📅</span> Mar 25: College Foundation Day</li>
+            <li><span class="icon">📅</span> Apr 10: Cultural Festival</li>
+            <li><span class="icon">📅</span> Sep 5: Teachers' Day</li>
+            <li><span class="icon">📅</span> Dec 20: Alumni Day</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      function calculatePlan() {
+        const totalDays = parseInt(document.getElementById("totalDays").value);
+        const checkboxes = document.querySelectorAll(
+          ".days-checkboxes input:checked"
+        );
+        const selectedDays = Array.from(checkboxes).map((cb) => cb.value);
+        const resultBox = document.getElementById("result");
+
+        if (!totalDays || selectedDays.length === 0) {
+          resultBox.textContent =
+            "Please enter total days and select preferred weekdays.";
+          return;
+        }
+
+        const requiredDays = Math.ceil(0.75 * totalDays);
+        const weeks = Math.ceil(requiredDays / selectedDays.length);
+
+        resultBox.innerHTML = `To maintain 75% attendance:<br>
+        ➤ You need to attend at least <strong>${requiredDays}</strong> days.<br>
+        ➤ That's <strong>${
+          selectedDays.length
+        }</strong> days/week for <strong>${weeks}</strong> weeks.<br>
+        ➤ Preferred days: <strong>${selectedDays.join(", ")}</strong>.`;
+      }
+    </script>
+  </body>
+</html>
