@@ -2083,6 +2083,61 @@
       window.addEventListener("DOMContentLoaded", () => {
         document.getElementById("calculate-btn").click(); // simulate initial calc
       });
+      function updateSubjectBars(basePercent) {
+    function getRandomNearby(base, delta = 5) {
+      const min = Math.max(0, base - delta);
+      const max = Math.min(100, base + delta);
+      return Math.floor(Math.random() * (max - min + 1)) + min;
+    }
+
+    const math = getRandomNearby(basePercent);
+    const physics = getRandomNearby(basePercent);
+    const cs = getRandomNearby(basePercent);
+
+    // Update values
+    document.getElementById("math-percentage").textContent = `${math}%`;
+    document.getElementById("math-progress").style.width = `${math}%`;
+
+    document.getElementById("physics-percentage").textContent = `${physics}%`;
+    document.getElementById("physics-progress").style.width = `${physics}%`;
+
+    document.getElementById("cs-percentage").textContent = `${cs}%`;
+    document.getElementById("cs-progress").style.width = `${cs}%`;
+
+    // Warnings
+    const warning = document.getElementById("cs-warning");
+    if (cs < 60) {
+      warning.textContent = "Low attendance! Improve your record.";
+    } else {
+      warning.textContent = "Attendance looks okay.";
+    }
+  }
+
+  // Integrate with the calculator
+  document.getElementById("calculate-btn").addEventListener("click", () => {
+    const attended = parseInt(document.getElementById("current-classes-attended").value);
+    const total = parseInt(document.getElementById("total-classes").value);
+    const target = parseInt(document.getElementById("target-percentage").value);
+
+    const currentPercent = Math.round((attended / total) * 100);
+    document.getElementById("current-percentage").textContent = `(${currentPercent}%)`;
+
+    updateAttendanceCircle(currentPercent);
+    updateSubjectBars(currentPercent);
+
+    const required = Math.ceil(((target * total - 100 * attended) / (100 - target)));
+    const resultText = document.getElementById("calculation-result");
+
+    if (required <= 0) {
+      resultText.innerHTML = `🎉 You already meet the <span class="font-medium">${target}%</span> attendance requirement.`;
+    } else {
+      resultText.innerHTML = `You need to attend <span class="font-medium text-indigo-600">${required}</span> more classes to reach <span class="font-medium">${target}%</span> attendance.`;
+    }
+  });
+
+  window.addEventListener("DOMContentLoaded", () => {
+    document.getElementById("calculate-btn").click();
+  });
     </script>
   </body>
 </html>
