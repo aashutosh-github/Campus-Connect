@@ -3,219 +3,1914 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>College Attendance Planner</title>
+    <title>CampusConnect - Attendance & Calendar</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet" />
+
     <style>
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", sans-serif;
-        transition: all 0.3s ease-in-out;
-      }
-
       body {
-        background-color: #f0f6ff;
-        padding: 20px;
+        font-family: "Poppins", sans-serif;
+        background-color: #f0f4f8;
+        overflow-x: hidden;
       }
 
-      header {
-        background-color: #4f83f1;
-        color: white;
-        padding: 20px;
-        border-radius: 10px;
-        text-align: center;
-        margin-bottom: 30px;
+      .navbar-item {
+        transition: all 0.3s ease;
+      }
+
+      .navbar-item:hover {
+        color: #6366f1;
+        transform: translateY(-2px);
+      }
+
+      .navbar-item.active {
+        color: #6366f1;
+        border-bottom: 2px solid #6366f1;
+      }
+
+      .add-button {
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+      }
+
+      .add-button:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 6px 16px rgba(99, 102, 241, 0.4);
+      }
+
+      .calendar-day {
+        transition: all 0.3s ease;
+        height: 110px;
+        overflow: hidden;
+      }
+
+      .calendar-day:hover {
+        background-color: #f3f4f6;
+        transform: scale(1.02);
+        z-index: 10;
         box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
       }
 
-      .layout {
-        display: grid;
-        grid-template-columns: 2fr 1fr;
-        gap: 20px;
+      .calendar-day.today {
+        background-color: #e0e7ff;
+        border: 2px solid #6366f1;
       }
 
-      .card {
-        background-color: white;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
+      .calendar-day.has-event {
+        position: relative;
       }
 
-      .card:hover {
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
+      .calendar-day.has-event::after {
+        content: "";
+        position: absolute;
+        bottom: 4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background-color: #6366f1;
       }
 
-      .card h2 {
-        color: #3469d1;
-        margin-bottom: 15px;
-        border-bottom: 2px solid #dbeafe;
-        padding-bottom: 10px;
+      .calendar-day.has-holiday {
+        background-color: #fef2f2;
       }
 
-      .form-group {
-        margin-bottom: 15px;
+      .calendar-day.has-class {
+        border-left: 3px solid #10b981;
       }
 
-      label {
-        display: block;
-        margin-bottom: 6px;
-        font-weight: 600;
-        color: #333;
+      .calendar-day.absent {
+        border-left: 3px solid #ef4444;
       }
 
-      input[type="number"] {
-        width: 100%;
-        padding: 10px;
-        border-radius: 6px;
-        border: 1px solid #ccc;
-        font-size: 14px;
-      }
-
-      .days-checkboxes label {
+      .event-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
         display: inline-block;
-        margin-right: 10px;
-        font-weight: 500;
-        color: #333;
-        margin-top: 5px;
+        margin-right: 4px;
       }
 
-      .days-checkboxes input {
-        margin-right: 5px;
+      .event-dot.event {
+        background-color: #6366f1;
       }
 
-      button {
-        width: 100%;
-        padding: 12px;
-        background-color: #4f83f1;
+      .event-dot.holiday {
+        background-color: #ef4444;
+      }
+
+      .event-dot.class {
+        background-color: #10b981;
+      }
+
+      .tab-button {
+        transition: all 0.3s ease;
+      }
+
+      .tab-button.active {
+        background-color: #6366f1;
         color: white;
-        border: none;
-        border-radius: 6px;
-        font-size: 16px;
-        cursor: pointer;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
       }
 
-      button:hover {
-        background-color: #3d6ed1;
-        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+      .attendance-good {
+        color: #10b981;
       }
 
-      .result {
-        margin-top: 15px;
-        font-weight: bold;
-        color: #1e3a8a;
+      .attendance-warning {
+        color: #f59e0b;
       }
 
-      .info-box {
-        margin-top: 20px;
-        background-color: #e4edff;
-        padding: 15px;
+      .attendance-danger {
+        color: #ef4444;
+      }
+
+      .modal {
+        transition: all 0.3s ease;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+      }
+
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #c7d2fe;
         border-radius: 10px;
-        color: #1e40af;
       }
 
-      ul {
-        list-style: none;
-        padding-left: 0;
+      .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+        background: #a5b4fc;
       }
 
-      li {
-        margin-bottom: 10px;
-        color: #333;
+      .content-section {
+        display: none;
+        animation: fadeIn 0.5s ease forwards;
       }
 
-      .icon {
-        margin-right: 5px;
-        color: #1e40af;
+      .content-section.active {
+        display: block;
+      }
+
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes pulse {
+        0% {
+          transform: scale(1);
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        100% {
+          transform: scale(1);
+        }
+      }
+
+      @keyframes slideInRight {
+        from {
+          transform: translateX(30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInLeft {
+        from {
+          transform: translateX(-30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes slideInUp {
+        from {
+          transform: translateY(30px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+
+      @keyframes circleAnimation {
+        from {
+          stroke-dasharray: 0, 100;
+        }
+      }
+
+      .animate-pulse {
+        animation: pulse 2s infinite;
+      }
+
+      .animate-slide-right {
+        animation: slideInRight 0.5s forwards;
+      }
+
+      .animate-slide-left {
+        animation: slideInLeft 0.5s forwards;
+      }
+
+      .animate-slide-up {
+        animation: slideInUp 0.5s forwards;
+      }
+
+      .attendance-card {
+        transition: all 0.3s ease;
+      }
+
+      .attendance-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .progress-circle {
+        transition: all 1s ease;
+      }
+
+      .day-event {
+        transition: all 0.3s ease;
+        cursor: pointer;
+      }
+
+      .day-event:hover {
+        transform: translateX(3px);
+      }
+
+      .tooltip {
+        position: relative;
+        display: inline-block;
+      }
+
+      .tooltip .tooltiptext {
+        visibility: hidden;
+        width: 120px;
+        background-color: #333;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px;
+        position: absolute;
+        z-index: 1;
+        bottom: 125%;
+        left: 50%;
+        margin-left: -60px;
+        opacity: 0;
+        transition: opacity 0.3s;
+      }
+
+      .tooltip:hover .tooltiptext {
+        visibility: visible;
+        opacity: 1;
+      }
+
+      .event-card {
+        transition: all 0.3s ease;
+      }
+
+      .event-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+      }
+
+      .btn-action {
+        transition: all 0.3s ease;
+      }
+
+      .btn-action:hover {
+        transform: translateY(-2px);
+      }
+
+      .attendance-circle-bg {
+        transition: stroke-dasharray 1.5s ease;
+      }
+
+      .attendance-circle {
+        transition: stroke-dasharray 1.5s ease;
+      }
+
+      .progress-bar {
+        transition: width 1s ease;
+      }
+
+      .calendar-controls {
+        transition: all 0.3s ease;
+      }
+
+      .calendar-controls:hover {
+        background-color: #f9fafb;
+      }
+
+      .month-selector {
+        position: relative;
+        cursor: pointer;
+      }
+
+      .month-dropdown {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        background-color: white;
+        border: 1px solid #e5e7eb;
+        border-radius: 0.375rem;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+          0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        z-index: 20;
+        width: 200px;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+
+      .month-selector:hover .month-dropdown {
+        display: block;
+      }
+
+      .month-option {
+        padding: 0.5rem 1rem;
+        cursor: pointer;
+        transition: all 0.2s ease;
+      }
+
+      .month-option:hover {
+        background-color: #f3f4f6;
+      }
+
+      .status-badge {
+        transition: all 0.3s ease;
+      }
+
+      .status-badge:hover {
+        transform: scale(1.1);
+      }
+
+      .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+        width: 18px;
+        height: 18px;
+        background-color: #ef4444;
+        color: white;
+        border-radius: 50%;
+        font-size: 0.7rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        animation: pulse 2s infinite;
+      }
+
+      .circle-animation {
+        animation: circleAnimation 1.5s ease forwards;
+      }
+
+      .modal-overlay {
+        opacity: 0;
+        transition: opacity 0.3s ease;
+        pointer-events: none;
+      }
+
+      .modal-overlay.active {
+        opacity: 1;
+        pointer-events: auto;
+      }
+
+      .modal-container {
+        transform: translateY(20px);
+        opacity: 0;
+        transition: all 0.3s ease;
+      }
+
+      .modal-container.active {
+        transform: translateY(0);
+        opacity: 1;
+      }
+
+      .attendance-circle-container {
+        position: relative;
+        width: 160px;
+        height: 160px;
+        margin: 0 auto;
+      }
+
+      .attendance-circle-text {
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        text-align: center;
+      }
+
+      .attendance-circle-svg {
+        transform: rotate(-90deg);
+      }
+
+      @keyframes fadeInOut {
+        0% {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        10% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        90% {
+          opacity: 1;
+          transform: translateY(0);
+        }
+        100% {
+          opacity: 0;
+          transform: translateY(-10px);
+        }
+      }
+
+      .toast-animation {
+        animation: fadeInOut 3s ease forwards;
+      }
+
+      .btn-hover-effect {
+        position: relative;
+        overflow: hidden;
+      }
+
+      .btn-hover-effect:after {
+        content: "";
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        width: 5px;
+        height: 5px;
+        background: rgba(255, 255, 255, 0.5);
+        opacity: 0;
+        border-radius: 100%;
+        transform: scale(1, 1) translate(-50%);
+        transform-origin: 50% 50%;
+      }
+
+      .btn-hover-effect:focus:not(:active)::after {
+        animation: ripple 1s ease-out;
+      }
+
+      @keyframes ripple {
+        0% {
+          transform: scale(0, 0);
+          opacity: 0.5;
+        }
+        100% {
+          transform: scale(20, 20);
+          opacity: 0;
+        }
+      }
+
+      .shake-animation {
+        animation: shake 0.5s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+      }
+
+      @keyframes shake {
+        10%,
+        90% {
+          transform: translate3d(-1px, 0, 0);
+        }
+        20%,
+        80% {
+          transform: translate3d(2px, 0, 0);
+        }
+        30%,
+        50%,
+        70% {
+          transform: translate3d(-4px, 0, 0);
+        }
+        40%,
+        60% {
+          transform: translate3d(4px, 0, 0);
+        }
+      }
+
+      .bounce-in {
+        animation: bounceIn 0.5s;
+      }
+
+      @keyframes bounceIn {
+        0% {
+          transform: scale(0.3);
+          opacity: 0;
+        }
+        50% {
+          transform: scale(1.05);
+        }
+        70% {
+          transform: scale(0.9);
+        }
+        100% {
+          transform: scale(1);
+          opacity: 1;
+        }
       }
     </style>
   </head>
   <body>
-    <header>
-      <h1>College Attendance Planner</h1>
-    </header>
+    <!-- Navigation Bar -->
+    <nav class="bg-white shadow-sm sticky top-0 z-50">
+      <div class="max-w-7xl mx-auto px-4">
+        <div class="flex justify-between items-center h-16">
+          <!-- Left side - Logo and Search -->
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <div class="flex items-center">
+                <svg
+                  class="w-8 h-8 text-indigo-600"
+                  fill="currentColor"
+                  viewBox="0 0 20 20">
+                  <path
+                    d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838l-2.727 1.17 3.721 1.593a1 1 0 00.788 0l7-3a1 1 0 000-1.84l-7-3z"></path>
+                  <path
+                    d="M9.75 11.5l-3.024-1.294a.997.997 0 01-.276-.388L3.65 7.89a1 1 0 00-.722-.579L.752 6.67a1 1 0 00-.64 1.88l2.193.822 2.774 1.153a1 1 0 01.513.51l2.098 4.697a1 1 0 001.818 0l2.098-4.697a1 1 0 01.513-.51l2.774-1.153 2.193-.822a1 1 0 00-.64-1.88l-2.176.642a1 1 0 00-.722.579l-2.8 1.928a.997.997 0 01-.276.388L10.25 11.5a1 1 0 01-.5 0z"></path>
+                </svg>
+                <span class="ml-2 text-xl font-bold text-gray-800"
+                  >CampusConnect</span
+                >
+              </div>
+            </div>
+            <div class="ml-6 relative">
+              <div
+                class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg
+                  class="h-5 w-5 text-gray-400"
+                  fill="currentColor"
+                  viewBox="0 0 20 20">
+                  <path
+                    fill-rule="evenodd"
+                    d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                    clip-rule="evenodd"></path>
+                </svg>
+              </div>
+              <input
+                id="search-input"
+                class="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 sm:text-sm"
+                placeholder="Search..."
+                type="search" />
+            </div>
+          </div>
 
-    <div class="layout">
-      <div class="card">
-        <h2>Attendance Calculator</h2>
-        <div class="form-group">
-          <label>Total College Days</label>
-          <input
-            type="number"
-            id="totalDays"
-            placeholder="Enter total number of days" />
-        </div>
-        <div class="form-group">
-          <label>Select Preferred Days to Attend:</label>
-          <div class="days-checkboxes">
-            <label><input type="checkbox" value="Mon" /> Mon</label>
-            <label><input type="checkbox" value="Tue" /> Tue</label>
-            <label><input type="checkbox" value="Wed" /> Wed</label>
-            <label><input type="checkbox" value="Thu" /> Thu</label>
-            <label><input type="checkbox" value="Fri" /> Fri</label>
+          <!-- Right side - Navigation -->
+          <div class="flex items-center">
+            <div class="hidden md:block">
+              <div class="ml-10 flex items-baseline space-x-4">
+                <a
+                  href="./adminPage.html"
+                  class="navbar-item nav-link px-3 py-2 text-sm font-medium text-gray-600"
+                  data-target="dashboard"
+                  >Dashboard</a
+                >
+                <a
+                  href="#"
+                  class="navbar-item nav-link active px-3 py-2 text-sm font-medium"
+                  data-target="calendar"
+                  >Calendar</a
+                >
+                <!-- <a
+                  href="#"
+                  class="navbar-item nav-link px-3 py-2 text-sm font-medium text-gray-600"
+                  data-target="attendance"
+                  >Attendance</a
+                > -->
+                <a
+                  href="#eventsPart"
+                  class="navbar-item nav-link px-3 py-2 text-sm font-medium text-gray-600"
+                  data-target="events"
+                  >Events</a
+                >
+                <!-- <a
+                  href="#"
+                  class="navbar-item nav-link px-3 py-2 text-sm font-medium text-gray-600"
+                  data-target="settings"
+                  >Settings</a
+                > -->
+              </div>
+            </div>
+
+            <!-- Profile dropdown -->
+            <div class="ml-4 relative flex items-center">
+              <button
+                class="bg-indigo-100 p-1 rounded-full text-indigo-600 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 mr-3 relative">
+                <svg
+                  class="h-6 w-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"></path>
+                </svg>
+                <span class="notification-badge">3</span>
+              </button>
+              <div
+                class="bg-indigo-100 p-1 rounded-full text-indigo-600 hover:text-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                <img
+                  class="h-8 w-8 rounded-full"
+                  src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                  alt="Profile" />
+              </div>
+            </div>
           </div>
         </div>
-        <button onclick="calculatePlan()">Calculate</button>
-        <div class="result" id="result"></div>
-        <div class="info-box">
-          <strong>How it works</strong>
-          <p>
-            To maintain 75% attendance, you need to attend at least 75% of the
-            total college days. This calculator helps you plan which days to
-            attend each week.
-          </p>
+      </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <!-- Attendance Calculator Section (Top) -->
+      <div class="mb-8 animate-slide-up" style="animation-delay: 0.1s">
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">
+              Attendance Calculator
+            </h1>
+            <p class="text-gray-600 mt-1">
+              Track your attendance and calculate requirements to meet minimum
+              criteria
+            </p>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <!-- Overall Attendance Card -->
+          <div class="bg-white rounded-lg shadow-sm p-6 attendance-card">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+              Overall Attendance
+            </h3>
+            <div class="attendance-circle-container mb-4">
+              <svg
+                class="attendance-circle-svg w-full h-full"
+                viewBox="0 0 100 100">
+                <circle
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  fill="none"
+                  stroke="#E5E7EB"
+                  stroke-width="8" />
+                <circle
+                  id="overall-attendance-circle"
+                  cx="50"
+                  cy="50"
+                  r="45"
+                  fill="none"
+                  stroke="#10B981"
+                  stroke-width="8"
+                  stroke-dasharray="0 283"
+                  stroke-linecap="round"
+                  class="circle-animation" />
+              </svg>
+              <div class="attendance-circle-text">
+                <span
+                  id="overall-attendance-text"
+                  class="text-3xl font-bold text-gray-900"
+                  >0%</span
+                >
+                <p class="text-sm text-gray-600">attendance</p>
+              </div>
+            </div>
+            <div class="text-center">
+              <p class="text-sm text-gray-600">
+                Minimum requirement: <span class="font-medium">75%</span>
+              </p>
+              <p
+                class="text-sm font-medium text-green-600 mt-1"
+                id="attendance-status">
+                Calculating...
+              </p>
+            </div>
+          </div>
+
+          <!-- Subject-wise Attendance -->
+          <div class="bg-white rounded-lg shadow-sm p-6 attendance-card">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+              Subject-wise Attendance
+            </h3>
+            <div class="space-y-4">
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-medium text-gray-700"
+                    >Mathematics 101</span
+                  >
+                  <span
+                    class="text-sm font-medium attendance-good"
+                    id="math-percentage"
+                    >0%</span
+                  >
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    id="math-progress"
+                    class="bg-green-500 h-2.5 rounded-full progress-bar"
+                    style="width: 0%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-medium text-gray-700"
+                    >Physics 202</span
+                  >
+                  <span
+                    class="text-sm font-medium attendance-warning"
+                    id="physics-percentage"
+                    >0%</span
+                  >
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    id="physics-progress"
+                    class="bg-yellow-500 h-2.5 rounded-full progress-bar"
+                    style="width: 0%"></div>
+                </div>
+              </div>
+              <div>
+                <div class="flex justify-between mb-1">
+                  <span class="text-sm font-medium text-gray-700"
+                    >Computer Science 301</span
+                  >
+                  <span
+                    class="text-sm font-medium attendance-danger"
+                    id="cs-percentage"
+                    >0%</span
+                  >
+                </div>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                  <div
+                    id="cs-progress"
+                    class="bg-red-500 h-2.5 rounded-full progress-bar"
+                    style="width: 0%"></div>
+                </div>
+                <p class="text-xs text-red-600 mt-1" id="cs-warning">
+                  Calculating...
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Attendance Calculator -->
+          <div class="bg-white rounded-lg shadow-sm p-6 attendance-card">
+            <h3 class="text-lg font-semibold text-gray-900 mb-4">
+              Attendance Calculator
+            </h3>
+            <div class="space-y-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Select Subject</label
+                >
+                <select
+                  id="attendance-subject"
+                  class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border">
+                  <option value="math">Mathematics 101</option>
+                  <option value="physics">Physics 202</option>
+                  <option value="cs" selected>Computer Science 301</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Current Attendance</label
+                >
+                <div class="flex items-center">
+                  <input
+                    type="number"
+                    id="current-classes-attended"
+                    class="w-20 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border"
+                    value="23" />
+                  <span class="mx-2 text-gray-500">/</span>
+                  <input
+                    type="number"
+                    id="total-classes"
+                    class="w-20 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border"
+                    value="32" />
+                  <span
+                    class="ml-2 text-sm text-gray-600"
+                    id="current-percentage"
+                    >(72%)</span
+                  >
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Target Percentage</label
+                >
+                <div class="flex items-center">
+                  <input
+                    type="number"
+                    id="target-percentage"
+                    class="w-20 border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border"
+                    value="75" />
+                  <span class="ml-1 text-sm text-gray-600">%</span>
+                </div>
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1"
+                  >Result</label
+                >
+                <div class="p-3 bg-gray-50 rounded-md">
+                  <p class="text-sm text-gray-800" id="calculation-result">
+                    You need to attend
+                    <span class="font-medium text-indigo-600">3</span> more
+                    classes to reach
+                    <span class="font-medium">75%</span> attendance.
+                  </p>
+                </div>
+              </div>
+              <button
+                id="calculate-btn"
+                class="w-full bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md btn-action btn-hover-effect">
+                Calculate
+              </button>
+            </div>
+          </div>
         </div>
       </div>
 
-      <div>
-        <div class="card">
-          <h2>College Holidays</h2>
-          <ul>
-            <li><span class="icon">✔️</span> Jan 1: New Year's Day</li>
-            <li><span class="icon">✔️</span> Jan 26: Republic Day</li>
-            <li><span class="icon">✔️</span> Mar 8: Holi</li>
-            <li><span class="icon">✔️</span> Aug 15: Independence Day</li>
-            <li><span class="icon">✔️</span> Oct 2: Gandhi Jayanti</li>
-          </ul>
+      <!-- Calendar Section (Bottom) -->
+      <div class="animate-slide-up" style="animation-delay: 0.3s">
+        <!-- Header Section -->
+        <div
+          class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6">
+          <div>
+            <h1 class="text-2xl font-bold text-gray-900">Academic Calendar</h1>
+            <p class="text-gray-600 mt-1">
+              Manage your classes, attendance, events, and holidays
+            </p>
+          </div>
+          <div class="flex space-x-2 mt-4 md:mt-0">
+            <button
+              id="mark-attendance-btn"
+              class="add-button bg-green-600 hover:bg-green-700 text-white font-medium py-2 px-4 rounded-md flex items-center btn-hover-effect">
+              <svg
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+              </svg>
+              Mark Attendance
+            </button>
+            <button
+              id="add-event-btn"
+              class="add-button bg-indigo-600 hover:bg-indigo-700 text-white font-medium py-2 px-4 rounded-md flex items-center btn-hover-effect">
+              <svg
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+              </svg>
+              Add Event
+            </button>
+            <button
+              id="add-holiday-btn"
+              class="add-button bg-red-600 hover:bg-red-700 text-white font-medium py-2 px-4 rounded-md flex items-center btn-hover-effect">
+              <svg
+                class="w-5 h-5 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24">
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+              </svg>
+              Add Holiday
+            </button>
+          </div>
         </div>
-        <div class="card" style="margin-top: 20px">
-          <h2>College Events</h2>
-          <ul>
-            <li><span class="icon">📅</span> Feb 15-17: Annual Tech Fest</li>
-            <li><span class="icon">📅</span> Mar 25: College Foundation Day</li>
-            <li><span class="icon">📅</span> Apr 10: Cultural Festival</li>
-            <li><span class="icon">📅</span> Sep 5: Teachers' Day</li>
-            <li><span class="icon">📅</span> Dec 20: Alumni Day</li>
-          </ul>
+
+        <!-- Calendar Controls -->
+        <div class="bg-white rounded-lg shadow-sm p-4 mb-6 calendar-controls">
+          <div
+            class="flex flex-col md:flex-row md:items-center justify-between">
+            <div class="flex items-center mb-4 md:mb-0">
+              <button
+                id="prev-month"
+                class="text-gray-600 hover:text-gray-900 p-1 btn-action">
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 19l-7-7 7-7"></path>
+                </svg>
+              </button>
+              <div class="month-selector">
+                <h2
+                  id="current-month"
+                  class="text-xl font-semibold text-gray-800 mx-4 cursor-pointer">
+                  May 2025
+                </h2>
+                <div class="month-dropdown custom-scrollbar">
+                  <div class="month-option" data-month="0">January 2025</div>
+                  <div class="month-option" data-month="1">February 2025</div>
+                  <div class="month-option" data-month="2">March 2025</div>
+                  <div class="month-option" data-month="3">April 2025</div>
+                  <div class="month-option" data-month="4">May 2025</div>
+                  <div class="month-option" data-month="5">June 2025</div>
+                  <div class="month-option" data-month="6">July 2025</div>
+                  <div class="month-option" data-month="7">August 2025</div>
+                  <div class="month-option" data-month="8">September 2025</div>
+                  <div class="month-option" data-month="9">October 2025</div>
+                  <div class="month-option" data-month="10">November 2025</div>
+                  <div class="month-option" data-month="11">December 2025</div>
+                </div>
+              </div>
+              <button
+                id="next-month"
+                class="text-gray-600 hover:text-gray-900 p-1 btn-action">
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M9 5l7 7-7 7"></path>
+                </svg>
+              </button>
+              <button
+                id="today-btn"
+                class="ml-4 px-3 py-1 text-sm bg-indigo-100 text-indigo-700 rounded-md hover:bg-indigo-200 btn-action">
+                Today
+              </button>
+            </div>
+            <div class="flex items-center space-x-4">
+              <div class="flex items-center">
+                <span class="event-dot class"></span>
+                <span class="text-xs text-gray-600">Classes</span>
+              </div>
+              <div class="flex items-center">
+                <span class="event-dot event"></span>
+                <span class="text-xs text-gray-600">Events</span>
+              </div>
+              <div class="flex items-center">
+                <span class="event-dot holiday"></span>
+                <span class="text-xs text-gray-600">Holidays</span>
+              </div>
+              <div class="flex items-center">
+                <span class="w-2 h-2 bg-red-500 rounded-full mr-1"></span>
+                <span class="text-xs text-gray-600">Absent</span>
+              </div>
+              <div class="flex items-center">
+                <span class="w-2 h-2 bg-green-500 rounded-full mr-1"></span>
+                <span class="text-xs text-gray-600">Present</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Calendar Grid -->
+        <div class="bg-white rounded-lg shadow-sm overflow-hidden mb-6">
+          <!-- Days of week -->
+          <div class="grid grid-cols-7 bg-gray-50 border-b">
+            <div class="py-2 text-center text-sm font-medium text-gray-500">
+              Sun
+            </div>
+            <div class="py-2 text-center text-sm font-medium text-gray-500">
+              Mon
+            </div>
+            <div class="py-2 text-center text-sm font-medium text-gray-500">
+              Tue
+            </div>
+            <div class="py-2 text-center text-sm font-medium text-gray-500">
+              Wed
+            </div>
+            <div class="py-2 text-center text-sm font-medium text-gray-500">
+              Thu
+            </div>
+            <div class="py-2 text-center text-sm font-medium text-gray-500">
+              Fri
+            </div>
+            <div class="py-2 text-center text-sm font-medium text-gray-500">
+              Sat
+            </div>
+          </div>
+
+          <!-- Calendar days -->
+          <div class="grid grid-cols-7 border-b" id="calendar-grid">
+            <!-- Week 1 -->
+            <div class="calendar-day border-r border-b p-1 text-gray-400">
+              <div class="text-xs p-1">27</div>
+            </div>
+            <div class="calendar-day border-r border-b p-1 text-gray-400">
+              <div class="text-xs p-1">28</div>
+            </div>
+            <div class="calendar-day border-r border-b p-1 text-gray-400">
+              <div class="text-xs p-1">29</div>
+            </div>
+            <div class="calendar-day border-r border-b p-1 text-gray-400">
+              <div class="text-xs p-1">30</div>
+            </div>
+            <div class="calendar-day border-r border-b p-1 text-gray-400">
+              <div class="text-xs p-1">31</div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-01">
+              <div class="text-xs p-1">1</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Math 101
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-holiday"
+              data-date="2025-09-02">
+              <div class="text-xs p-1">2</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Weekend
+              </div>
+            </div>
+
+            <!-- Week 2 -->
+            <div
+              class="calendar-day border-r border-b p-1 has-holiday"
+              data-date="2025-09-03">
+              <div class="text-xs p-1">3</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Weekend
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-04">
+              <div class="text-xs p-1">4</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Physics 202
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                CS 301
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-05">
+              <div class="text-xs p-1">5</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Math 101
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class absent"
+              data-date="2025-09-06">
+              <div class="text-xs p-1">6</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                CS 301
+              </div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-red-500 rounded-full"></span>
+                Absent
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-07">
+              <div class="text-xs p-1">7</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Physics 202
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class has-event"
+              data-date="2025-09-08">
+              <div class="text-xs p-1">8</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Math 101
+              </div>
+              <div
+                class="text-xs bg-indigo-100 text-indigo-800 rounded px-1 mb-1 truncate day-event">
+                Tech Fest
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-holiday"
+              data-date="2025-09-09">
+              <div class="text-xs p-1">9</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Weekend
+              </div>
+            </div>
+
+            <!-- Week 3 -->
+            <div
+              class="calendar-day border-r border-b p-1 has-holiday"
+              data-date="2025-09-10">
+              <div class="text-xs p-1">10</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Weekend
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-11">
+              <div class="text-xs p-1">11</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Physics 202
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                CS 301
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-12">
+              <div class="text-xs p-1">12</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Math 101
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-13">
+              <div class="text-xs p-1">13</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                CS 301
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class absent"
+              data-date="2025-09-14">
+              <div class="text-xs p-1">14</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Physics 202
+              </div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-red-500 rounded-full"></span>
+                Absent
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-15">
+              <div class="text-xs p-1">15</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Math 101
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-holiday"
+              data-date="2025-09-16">
+              <div class="text-xs p-1">16</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Weekend
+              </div>
+            </div>
+
+            <!-- Week 4 -->
+            <div
+              class="calendar-day border-r border-b p-1 has-holiday"
+              data-date="2025-09-17">
+              <div class="text-xs p-1">17</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Weekend
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-18">
+              <div class="text-xs p-1">18</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Physics 202
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                CS 301
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-19">
+              <div class="text-xs p-1">19</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Math 101
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class has-event"
+              data-date="2025-09-20">
+              <div class="text-xs p-1">20</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                CS 301
+              </div>
+              <div
+                class="text-xs bg-indigo-100 text-indigo-800 rounded px-1 mb-1 truncate day-event">
+                Career Fair
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-21">
+              <div class="text-xs p-1">21</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Physics 202
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class today"
+              data-date="2025-09-22">
+              <div class="text-xs p-1 font-bold">22</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Math 101
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                <span
+                  class="w-2 h-2 inline-block bg-green-500 rounded-full"></span>
+                Present
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-holiday"
+              data-date="2025-09-23">
+              <div class="text-xs p-1">23</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Weekend
+              </div>
+            </div>
+
+            <!-- Week 5 -->
+            <div
+              class="calendar-day border-r border-b p-1 has-holiday"
+              data-date="2025-09-24">
+              <div class="text-xs p-1">24</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Weekend
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-25">
+              <div class="text-xs p-1">25</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Physics 202
+              </div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                CS 301
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class has-holiday"
+              data-date="2025-09-26">
+              <div class="text-xs p-1">26</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Foundation Day
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-27">
+              <div class="text-xs p-1">27</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                CS 301
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-28">
+              <div class="text-xs p-1">28</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Physics 202
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-class"
+              data-date="2025-09-29">
+              <div class="text-xs p-1">29</div>
+              <div
+                class="text-xs bg-green-100 text-green-800 rounded px-1 mb-1 truncate day-event">
+                Math 101
+              </div>
+            </div>
+            <div
+              class="calendar-day border-r border-b p-1 has-holiday"
+              data-date="2025-09-30">
+              <div class="text-xs p-1">30</div>
+              <div
+                class="text-xs bg-red-100 text-red-800 rounded px-1 mb-1 truncate day-event">
+                Weekend
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Upcoming Events -->
+        <div
+          class="bg-white rounded-lg shadow-sm p-6 mb-6 animate-slide-up"
+          style="animation-delay: 0.5s"
+          id="eventsPart">
+          <h3 class="text-lg font-semibold text-gray-900 mb-4">
+            Upcoming Events & Holidays
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="flex items-start event-card">
+              <div class="flex-shrink-0 bg-indigo-100 p-2 rounded-md">
+                <svg
+                  class="w-6 h-6 text-indigo-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <h4 class="text-md font-medium text-gray-900">
+                  Foundation Day
+                </h4>
+                <p class="text-sm text-gray-600">June 26, 2025</p>
+                <p class="text-sm text-gray-600 mt-1">
+                  College holiday - No classes will be held
+                </p>
+                <div class="mt-2">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-red-100 text-red-800">
+                    Holiday
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-start event-card">
+              <div class="flex-shrink-0 bg-indigo-100 p-2 rounded-md">
+                <svg
+                  class="w-6 h-6 text-indigo-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <h4 class="text-md font-medium text-gray-900">
+                  Mid-Semester Exams
+                </h4>
+                <p class="text-sm text-gray-600">July 10-15, 2025</p>
+                <p class="text-sm text-gray-600 mt-1">
+                  Prepare for your mid-semester examinations
+                </p>
+                <div class="mt-2">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-purple-100 text-purple-800">
+                    Academic
+                  </span>
+                </div>
+              </div>
+            </div>
+            <div class="flex items-start event-card">
+              <div class="flex-shrink-0 bg-indigo-100 p-2 rounded-md">
+                <svg
+                  class="w-6 h-6 text-indigo-600"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24">
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M21 15.546c-.523 0-1.046.151-1.5.454a2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.704 2.704 0 00-3 0 2.704 2.704 0 01-3 0 2.701 2.701 0 00-1.5-.454M9 6v2m3-2v2m3-2v2M9 3h.01M12 3h.01M15 3h.01M21 21v-7a2 2 0 00-2-2H5a2 2 0 00-2 2v7h18zm-3-9v-2a2 2 0 00-2-2H8a2 2 0 00-2 2v2h12z"></path>
+                </svg>
+              </div>
+              <div class="ml-4">
+                <h4 class="text-md font-medium text-gray-900">
+                  Cultural Festival
+                </h4>
+                <p class="text-sm text-gray-600">June 25-27, 2025</p>
+                <p class="text-sm text-gray-600 mt-1">
+                  Annual cultural festival with performances
+                </p>
+                <div class="mt-2">
+                  <span
+                    class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-pink-100 text-pink-800">
+                    Cultural
+                  </span>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
 
-    <script>
-      function calculatePlan() {
-        const totalDays = parseInt(document.getElementById("totalDays").value);
-        const checkboxes = document.querySelectorAll(
-          ".days-checkboxes input:checked"
-        );
-        const selectedDays = Array.from(checkboxes).map((cb) => cb.value);
-        const resultBox = document.getElementById("result");
+    <!-- Mark Attendance Modal -->
+    <div
+      id="mark-attendance-modal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden modal-overlay">
+      <div
+        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md transform transition-all modal-container">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-900">Mark Attendance</h3>
+          <button
+            id="close-attendance-modal"
+            class="text-gray-400 hover:text-gray-500">
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Date</label
+            >
+            <input
+              type="date"
+              id="attendance-date"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Subject</label
+            >
+            <select
+              id="attendance-subject-modal"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border">
+              <option value="math">Mathematics 101</option>
+              <option value="physics">Physics 202</option>
+              <option value="cs">Computer Science 301</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Status</label
+            >
+            <div class="flex space-x-4">
+              <label class="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="attendance-status"
+                  value="present"
+                  class="form-radio text-indigo-600"
+                  checked />
+                <span class="ml-2 text-gray-700">Present</span>
+              </label>
+              <label class="inline-flex items-center">
+                <input
+                  type="radio"
+                  name="attendance-status"
+                  value="absent"
+                  class="form-radio text-red-600" />
+                <span class="ml-2 text-gray-700">Absent</span>
+              </label>
+            </div>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Notes (Optional)</label
+            >
+            <textarea
+              id="attendance-notes"
+              rows="2"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border"></textarea>
+          </div>
+          <div class="flex justify-end space-x-3 mt-6">
+            <button
+              id="cancel-attendance"
+              class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 btn-hover-effect">
+              Cancel
+            </button>
+            <button
+              id="save-attendance"
+              class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-indigo-700 btn-hover-effect">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        if (!totalDays || selectedDays.length === 0) {
-          resultBox.textContent =
-            "Please enter total days and select preferred weekdays.";
-          return;
-        }
+    <!-- Add Event Modal -->
+    <div
+      id="add-event-modal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden modal-overlay">
+      <div
+        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md transform transition-all modal-container">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-900">Add Event</h3>
+          <button
+            id="close-event-modal"
+            class="text-gray-400 hover:text-gray-500">
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Event Title</label
+            >
+            <input
+              type="text"
+              id="event-title"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Date</label
+            >
+            <input
+              type="date"
+              id="event-date"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Event Type</label
+            >
+            <select
+              id="event-type"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border">
+              <option value="academic">Academic</option>
+              <option value="cultural">Cultural</option>
+              <option value="sports">Sports</option>
+              <option value="workshop">Workshop</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Location</label
+            >
+            <input
+              type="text"
+              id="event-location"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Description</label
+            >
+            <textarea
+              id="event-description"
+              rows="3"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border"></textarea>
+          </div>
+          <div class="flex justify-end space-x-3 mt-6">
+            <button
+              id="cancel-event"
+              class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 btn-hover-effect">
+              Cancel
+            </button>
+            <button
+              id="save-event"
+              class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-indigo-700 btn-hover-effect">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        const requiredDays = Math.ceil(0.75 * totalDays);
-        const weeks = Math.ceil(requiredDays / selectedDays.length);
+    <!-- Add Holiday Modal -->
+    <div
+      id="add-holiday-modal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden modal-overlay">
+      <div
+        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md transform transition-all modal-container">
+        <div class="flex justify-between items-center mb-4">
+          <h3 class="text-lg font-semibold text-gray-900">Add Holiday</h3>
+          <button
+            id="close-holiday-modal"
+            class="text-gray-400 hover:text-gray-500">
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Holiday Name</label
+            >
+            <input
+              type="text"
+              id="holiday-title"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Date</label
+            >
+            <input
+              type="date"
+              id="holiday-date"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border" />
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Holiday Type</label
+            >
+            <select
+              id="holiday-type"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border">
+              <option value="national">National Holiday</option>
+              <option value="religious">Religious Holiday</option>
+              <option value="college">College Holiday</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1"
+              >Description</label
+            >
+            <textarea
+              id="holiday-description"
+              rows="3"
+              class="w-full border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 py-2 px-3 border"></textarea>
+          </div>
+          <div class="flex justify-end space-x-3 mt-6">
+            <button
+              id="cancel-holiday"
+              class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 btn-hover-effect">
+              Cancel
+            </button>
+            <button
+              id="save-holiday"
+              class="px-4 py-2 bg-red-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-red-700 btn-hover-effect">
+              Save
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
 
-        resultBox.innerHTML = `To maintain 75% attendance:<br>
-        ➤ You need to attend at least <strong>${requiredDays}</strong> days.<br>
-        ➤ That's <strong>${
-          selectedDays.length
-        }</strong> days/week for <strong>${weeks}</strong> weeks.<br>
-        ➤ Preferred days: <strong>${selectedDays.join(", ")}</strong>.`;
-      }
-    </script>
+    <!-- Day Details Modal -->
+    <div
+      id="day-details-modal"
+      class="fixed inset-0 bg-gray-600 bg-opacity-50 flex items-center justify-center z-50 hidden modal-overlay">
+      <div
+        class="bg-white rounded-lg shadow-xl p-6 w-full max-w-md transform transition-all modal-container">
+        <div class="flex justify-between items-center mb-4">
+          <h3
+            class="text-lg font-semibold text-gray-900"
+            id="day-details-title">
+            May 17, 2025
+          </h3>
+          <button
+            id="close-day-details"
+            class="text-gray-400 hover:text-gray-500">
+            <svg
+              class="h-6 w-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24">
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+          </button>
+        </div>
+        <div class="space-y-4">
+          <div id="day-classes">
+            <h4 class="text-md font-medium text-gray-800 mb-2">Classes</h4>
+            <div class="space-y-2" id="day-classes-list">
+              <div
+                class="flex justify-between items-center p-2 bg-green-50 rounded-md">
+                <div>
+                  <p class="text-sm font-medium text-gray-700">
+                    Mathematics 101
+                  </p>
+                  <p class="text-xs text-gray-500">9:00 AM - 10:30 AM</p>
+                </div>
+                <span
+                  class="px-2 py-1 text-xs font-medium rounded-full bg-green-100 text-green-800"
+                  >Present</span
+                >
+              </div>
+            </div>
+          </div>
+          <div id="day-events">
+            <h4 class="text-md font-medium text-gray-800 mb-2">Events</h4>
+            <div class="space-y-2" id="day-events-list">
+              <!-- Will be populated dynamically -->
+            </div>
+          </div>
+          <div id="day-holidays">
+            <h4 class="text-md font-medium text-gray-800 mb-2">Holidays</h4>
+            <div class="space-y-2" id="day-holidays-list">
+              <!-- Will be populated dynamically -->
+            </div>
+          </div>
+          <div class="flex justify-end space-x-3 mt-6">
+            <button
+              id="close-details"
+              class="px-4 py-2 border border-gray-300 rounded-md text-sm font-medium text-gray-700 hover:bg-gray-50 btn-hover-effect">
+              Close
+            </button>
+            <button
+              id="add-to-day"
+              class="px-4 py-2 bg-indigo-600 border border-transparent rounded-md text-sm font-medium text-white hover:bg-indigo-700 btn-hover-effect">
+              Add Event
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast Notification -->
+    <div
+      id="toast-notification"
+      class="fixed bottom-4 right-4 bg-green-600 text-white px-4 py-2 rounded-md shadow-lg transform transition-all duration-500 translate-y-20 opacity-0 flex items-center">
+      <svg
+        class="w-5 h-5 mr-2"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24">
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M5 13l4 4L19 7"></path>
+      </svg>
+      <span id="toast-message">Successfully saved!</span>
+    </div>
   </body>
 </html>
